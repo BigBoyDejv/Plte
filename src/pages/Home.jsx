@@ -100,7 +100,7 @@ export default function Home() {
 
       <TipSection t={t} isRtl={isRtl} lang={lang} />
       <Reviews t={t} />
-      <Chatbot t={t} />
+      <Chatbot t={t} lang={lang} />
       <Footer />
     </div>
   );

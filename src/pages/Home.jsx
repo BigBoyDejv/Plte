@@ -6,7 +6,7 @@ import TipSection from '../components/TipSection';
 import FolkDivider from '../components/FolkDivider';
 import TripTracker from '../components/TripTracker';
 import Reviews from '../components/Reviews';
-
+import Footer from '../components/Footer';  // PRIDANÝ IMPORT
 
 const stopImages = [
   "https://www.plte-dunajec.sk/images/plte_dunajec.jpg",
@@ -50,8 +50,6 @@ export default function Home() {
 
       <HeroSection t={t} currentLang={lang} onChangeLang={setLang} />
       <TripTracker t={t} />
-
-
 
       <div className="h-8 bg-goral-800 folk-pattern" />
 
@@ -101,14 +99,9 @@ export default function Home() {
 
       <TipSection t={t} isRtl={isRtl} />
       <Reviews t={t} />
-      <footer className="bg-goral-900 border-t-2 border-goral-700 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <FolkDivider className="mb-6 opacity-40 justify-center" />
-          <p className="text-goral-400 text-sm font-body">
-            2026 Splavovanie Dunajca. Vsetky prava vyhradene.
-          </p>
-        </div>
-      </footer>
+
+      {/* NOVÝ FOOTER KOMPONENT */}
+      <Footer />
     </div>
   );
 }

@@ -4,17 +4,56 @@ import FolkDivider from './FolkDivider';
 
 export default function StopCard({ index, title, description, image, lang, t, dir }) {
   const [audioState, setAudioState] = useState('idle');
-  const utteranceRef = useRef(null);
+  const [currentAudio, setCurrentAudio] = useState(null);
 
-  const langMap = {
-    sk: 'sk-SK', pl: 'pl-PL', cs: 'cs-CZ', de: 'de-DE',
-    hu: 'hu-HU', en: 'en-US', lt: 'lt-LT', lv: 'lv-LV',
-    ru: 'ru-RU', he: 'he-IL'
+  // Mapovanie jazykov na hlasy pre Workera
+  const voiceMap = {
+    sk: 'sk-SK-ViktoriaNeural',
+    en: 'en-US-LiamNeural',
+    pl: 'pl-PL-ZofiaNeural',
+    de: 'de-DE-KatjaNeural',
+    hu: 'hu-HU-NoemiNeural',
+    cz: 'cs-CZ-VlastaNeural',
+    ru: 'ru-RU-DmitryNeural',
+    fr: 'fr-FR-HenriNeural',
+    es: 'es-ES-AlvaroNeural',
   };
 
+  const langMap = {
+    sk: 'sk-SK',
+    pl: 'pl-PL',
+    cs: 'cs-CZ',
+    de: 'de-DE',
+    hu: 'hu-HU',
+    en: 'en-US',
+    lt: 'lt-LT',
+    lv: 'lv-LV',
+    ru: 'ru-RU',
+    he: 'he-IL',
+    fr: 'fr-FR',
+    es: 'es-ES'
+  };
+
+  // Zastavenie prehrávania pri odmontovaní komponentu
   useEffect(() => {
-    return () => window.speechSynthesis?.cancel();
-  }, []);
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+    };
+  }, [currentAudio]);
+
+
+
+
+
+
+
+
+
+
+
 
   const handleAudio = () => {
     if (audioState === 'playing') {
@@ -22,18 +61,21 @@ export default function StopCard({ index, title, description, image, lang, t, di
       setAudioState('idle');
       return;
     }
+
     setAudioState('loading');
+
     const utterance = new SpeechSynthesisUtterance(description);
-    utterance.lang = langMap[lang] || 'en-US';
-    utterance.rate = 0.9;
+
+    utterance.lang = langMap[lang] || 'sk-SK';
+    utterance.rate = 0.85;
+
     utterance.onstart = () => setAudioState('playing');
     utterance.onend = () => setAudioState('idle');
     utterance.onerror = () => setAudioState('idle');
-    utteranceRef.current = utterance;
+
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   };
-
   const isPlaying = audioState === 'playing';
   const isLoading = audioState === 'loading';
 
@@ -52,7 +94,7 @@ export default function StopCard({ index, title, description, image, lang, t, di
           <div className="absolute inset-0 folk-pattern opacity-40" />
         </div>
 
-        {/* Image - BEZ BLIKANIA A BEZ PULZOVANIA */}
+        {/* Image */}
         <div className="relative h-56 sm:h-72 overflow-hidden">
           <img
             src={image}
@@ -84,6 +126,7 @@ export default function StopCard({ index, title, description, image, lang, t, di
                 ? 'bg-river-600 text-white border-river-700 shadow-lg'
                 : 'bg-goral-700 text-goral-50 border-goral-800 hover:bg-goral-800 shadow-lg shadow-goral-700/25'
               }`}
+            disabled={isLoading}
           >
             {isLoading ? (
               <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">

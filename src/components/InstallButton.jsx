@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 function isStandalone() {
     return (
         // @ts-ignore
-        window.navigator.standalone === true ||
+        ('standalone' in navigator && navigator.standalone === true) ||
         window.matchMedia('(display-mode: standalone)').matches
     );
 }
@@ -16,238 +16,205 @@ function detectBrowser() {
     return 'chrome';
 }
 
-// --- Modaly pre manuálnu inštaláciu ---
+// --- Modálne okno pre Safari (preložené) ---
+function SafariModal({ onClose, t }) {
+    const texts = {
+        title: t?.install_safari_title || "Pridať na domovskú obrazovku",
+        subtitle: t?.install_safari_subtitle || "Inštalácia na iPhone/iPad:",
+        step1: t?.install_step1 || "Kliknite na tlačidlo „Zdieľať“ (ikona so šípkou)",
+        step2: t?.install_step2 || "Vyberte „Pridať na domovskú obrazovku“",
+        step3: t?.install_step3 || "Kliknite na „Pridať“",
+        info: t?.install_info || "Aplikácia sa objaví na domovskej obrazovke!",
+        close: t?.close || "Zatvoriť"
+    };
 
-function SafariModal({ onClose }) {
     return (
-        <div
-            onClick={onClose}
-            style={{
-                position: 'fixed', inset: 0,
-                background: 'rgba(0,0,0,0.55)',
-                backdropFilter: 'blur(4px)',
-                zIndex: 9999,
-                display: 'flex', alignItems: 'flex-end',
-                animation: 'fadeIn .18s ease',
-            }}
-        >
-            <div
-                onClick={e => e.stopPropagation()}
-                style={{
-                    width: '100%',
-                    background: 'var(--modal-bg, #1c1c1e)',
-                    borderRadius: '20px 20px 0 0',
-                    padding: '24px 24px 36px',
-                    color: '#fff',
-                    animation: 'slideUp .22s ease',
-                    boxShadow: '0 -8px 40px rgba(0,0,0,0.4)',
-                }}
-            >
-                {/* Handle */}
+        <div onClick={onClose} style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.55)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 9999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+            <div onClick={e => e.stopPropagation()} style={{
+                width: '85%',
+                maxWidth: 320,
+                background: '#1c1c1e',
+                borderRadius: 20,
+                padding: '24px 20px 20px',
+                color: '#fff',
+                textAlign: 'center',
+            }}>
+                {/* Ikona */}
                 <div style={{
-                    width: 36, height: 4,
-                    background: 'rgba(255,255,255,0.2)',
-                    borderRadius: 99, margin: '0 auto 20px',
-                }} />
+                    width: 48, height: 48,
+                    background: '#2c2c2e',
+                    borderRadius: 12,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto 16px',
+                }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                </div>
 
-                <p style={{ margin: '0 0 6px', fontWeight: 600, fontSize: 17 }}>
-                    Pridať na domovskú obrazovku
+                <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 18 }}>
+                    {texts.title}
                 </p>
-                <p style={{ margin: '0 0 24px', fontSize: 14, opacity: 0.6, lineHeight: 1.5 }}>
-                    Otvor aplikáciu priamo z plochy bez prehliadača.
+                <p style={{ margin: '0 0 16px', fontSize: 14, opacity: 0.6 }}>
+                    {texts.subtitle}
                 </p>
 
-                {/* Kroky */}
-                {[
-                    {
-                        icon: (
-                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                            </svg>
-                        ),
-                        label: 'Klepni na ikonu Zdieľať',
-                        sub: 'Ikona so šípkou hore v spodnej lište',
-                    },
-                    {
-                        icon: (
-                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        ),
-                        label: 'Vyber „Pridať na plochu"',
-                        sub: 'Skroluj dole v zozname akcií',
-                    },
-                    {
-                        icon: (
-                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
-                        ),
-                        label: 'Potvrď „Pridať"',
-                        sub: 'Aplikácia sa objaví na ploche',
-                    },
-                ].map((step, i) => (
-                    <div key={i} style={{ display: 'flex', gap: 14, marginBottom: 18, alignItems: 'flex-start' }}>
+                <div style={{ textAlign: 'left', marginBottom: 20 }}>
+                    <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
                         <div style={{
-                            width: 36, height: 36, borderRadius: 10,
-                            background: 'rgba(255,255,255,0.1)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            flexShrink: 0,
-                        }}>
-                            {step.icon}
-                        </div>
-                        <div>
-                            <div style={{ fontWeight: 500, fontSize: 15 }}>{step.label}</div>
-                            <div style={{ fontSize: 13, opacity: 0.5, marginTop: 2 }}>{step.sub}</div>
-                        </div>
+                            width: 24, height: 24, borderRadius: 12,
+                            background: '#3a3a3c', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center',
+                            fontSize: 12, fontWeight: 600, flexShrink: 0
+                        }}>1</div>
+                        <div style={{ fontSize: 14 }}>{texts.step1}</div>
                     </div>
-                ))}
+                    <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
+                        <div style={{
+                            width: 24, height: 24, borderRadius: 12,
+                            background: '#3a3a3c', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center',
+                            fontSize: 12, fontWeight: 600, flexShrink: 0
+                        }}>2</div>
+                        <div style={{ fontSize: 14 }}>{texts.step2}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
+                        <div style={{
+                            width: 24, height: 24, borderRadius: 12,
+                            background: '#3a3a3c', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center',
+                            fontSize: 12, fontWeight: 600, flexShrink: 0
+                        }}>3</div>
+                        <div style={{ fontSize: 14 }}>{texts.step3}</div>
+                    </div>
+                </div>
 
-                <button
-                    onClick={onClose}
-                    style={{
-                        marginTop: 8,
-                        width: '100%',
-                        padding: '14px',
-                        borderRadius: 14,
-                        border: 'none',
-                        background: 'rgba(255,255,255,0.12)',
-                        color: '#fff',
-                        fontSize: 15,
-                        fontWeight: 500,
-                        cursor: 'pointer',
-                    }}
-                >
-                    Rozumiem
-                </button>
-            </div>
-
-            <style>{`
-                @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-                @keyframes slideUp { from { transform: translateY(60px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
-            `}</style>
-        </div>
-    );
-}
-
-function OperaModal({ onClose }) {
-    return (
-        <div
-            onClick={onClose}
-            style={{
-                position: 'fixed', inset: 0,
-                background: 'rgba(0,0,0,0.55)',
-                backdropFilter: 'blur(4px)',
-                zIndex: 9999,
-                display: 'flex', alignItems: 'flex-end',
-                animation: 'fadeIn .18s ease',
-            }}
-        >
-            <div
-                onClick={e => e.stopPropagation()}
-                style={{
-                    width: '100%',
-                    background: 'var(--modal-bg, #1c1c1e)',
-                    borderRadius: '20px 20px 0 0',
-                    padding: '24px 24px 36px',
-                    color: '#fff',
-                    animation: 'slideUp .22s ease',
-                }}
-            >
-                <div style={{
-                    width: 36, height: 4,
-                    background: 'rgba(255,255,255,0.2)',
-                    borderRadius: 99, margin: '0 auto 20px',
-                }} />
-
-                <p style={{ margin: '0 0 6px', fontWeight: 600, fontSize: 17 }}>
-                    Inštalácia v Opere
-                </p>
-                <p style={{ margin: '0 0 20px', fontSize: 14, opacity: 0.6 }}>
-                    Kliknite na tri bodky → „Inštalovať ako aplikáciu" → Potvrdiť.
+                <p style={{ margin: '0 0 20px', fontSize: 13, opacity: 0.6 }}>
+                    {texts.info}
                 </p>
 
                 <button onClick={onClose} style={{
-                    width: '100%', padding: '14px', borderRadius: 14,
-                    border: 'none', background: 'rgba(255,255,255,0.12)',
-                    color: '#fff', fontSize: 15, fontWeight: 500, cursor: 'pointer',
-                }}>
-                    Rozumiem
-                </button>
-            </div>
-            <style>{`
-                @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-                @keyframes slideUp { from { transform: translateY(60px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
-            `}</style>
-        </div>
-    );
-}
-
-function FirefoxModal({ onClose }) {
-    return (
-        <div
-            onClick={onClose}
-            style={{
-                position: 'fixed', inset: 0,
-                background: 'rgba(0,0,0,0.55)',
-                backdropFilter: 'blur(4px)',
-                zIndex: 9999,
-                display: 'flex', alignItems: 'flex-end',
-                animation: 'fadeIn .18s ease',
-            }}
-        >
-            <div
-                onClick={e => e.stopPropagation()}
-                style={{
                     width: '100%',
-                    background: 'var(--modal-bg, #1c1c1e)',
-                    borderRadius: '20px 20px 0 0',
-                    padding: '24px 24px 36px',
+                    padding: '12px',
+                    borderRadius: 12,
+                    border: 'none',
+                    background: '#3a3a3c',
                     color: '#fff',
-                    animation: 'slideUp .22s ease',
-                }}
-            >
-                <div style={{
-                    width: 36, height: 4,
-                    background: 'rgba(255,255,255,0.2)',
-                    borderRadius: 99, margin: '0 auto 20px',
-                }} />
-
-                <p style={{ margin: '0 0 6px', fontWeight: 600, fontSize: 17 }}>
-                    Inštalácia vo Firefoxe
-                </p>
-                <p style={{ margin: '0 0 8px', fontSize: 14, opacity: 0.6 }}>
-                    Firefox má limitovanú podporu PWA. Pre najlepší zážitok odporúčame Chrome alebo Edge.
-                </p>
-                <p style={{ margin: '0 0 20px', fontSize: 14, opacity: 0.6 }}>
-                    Prípadne: Menu (☰) → „Pridať na domovskú obrazovku"
-                </p>
-
-                <button onClick={onClose} style={{
-                    width: '100%', padding: '14px', borderRadius: 14,
-                    border: 'none', background: 'rgba(255,255,255,0.12)',
-                    color: '#fff', fontSize: 15, fontWeight: 500, cursor: 'pointer',
+                    fontSize: 15,
+                    fontWeight: 500,
+                    cursor: 'pointer',
                 }}>
-                    Rozumiem
+                    {texts.close}
                 </button>
             </div>
-            <style>{`
-                @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-                @keyframes slideUp { from { transform: translateY(60px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
-            `}</style>
         </div>
     );
 }
 
-// --- Hlavný komponent ---
+// --- Modál pre Operu ---
+function OperaModal({ onClose, t }) {
+    const texts = {
+        title: t?.install_opera_title || "Inštalácia v Opere",
+        step: t?.install_opera_step || "Kliknite na tri bodky → „Inštalovať ako aplikáciu“",
+        close: t?.close || "Zatvoriť"
+    };
 
+    return (
+        <div onClick={onClose} style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.55)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 9999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+            <div onClick={e => e.stopPropagation()} style={{
+                width: '85%', maxWidth: 320,
+                background: '#1c1c1e',
+                borderRadius: 20,
+                padding: '24px 20px 20px',
+                color: '#fff',
+                textAlign: 'center',
+            }}>
+                <div style={{
+                    width: 48, height: 48,
+                    background: '#2c2c2e',
+                    borderRadius: 12,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto 16px',
+                }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                </div>
+                <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 18 }}>{texts.title}</p>
+                <p style={{ margin: '0 0 24px', fontSize: 14, opacity: 0.6 }}>{texts.step}</p>
+                <button onClick={onClose} style={{
+                    width: '100%', padding: '12px', borderRadius: 12,
+                    border: 'none', background: '#3a3a3c', color: '#fff', fontSize: 15, cursor: 'pointer',
+                }}>{texts.close}</button>
+            </div>
+        </div>
+    );
+}
+
+// --- Modál pre Firefox ---
+function FirefoxModal({ onClose, t }) {
+    const texts = {
+        title: t?.install_firefox_title || "Firefox má limitovanú podporu",
+        info: t?.install_firefox_info || "Pre najlepší zážitok použite Chrome alebo Edge.",
+        alt: t?.install_firefox_alt || "Prípadne: Menu (☰) → „Pridať na domovskú obrazovku“",
+        close: t?.close || "Zatvoriť"
+    };
+
+    return (
+        <div onClick={onClose} style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.55)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 9999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+            <div onClick={e => e.stopPropagation()} style={{
+                width: '85%', maxWidth: 320,
+                background: '#1c1c1e',
+                borderRadius: 20,
+                padding: '24px 20px 20px',
+                color: '#fff',
+                textAlign: 'center',
+            }}>
+                <div style={{
+                    width: 48, height: 48,
+                    background: '#2c2c2e',
+                    borderRadius: 12,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto 16px',
+                }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                </div>
+                <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 18 }}>{texts.title}</p>
+                <p style={{ margin: '0 0 8px', fontSize: 14, opacity: 0.6 }}>{texts.info}</p>
+                <p style={{ margin: '0 0 24px', fontSize: 13, opacity: 0.5 }}>{texts.alt}</p>
+                <button onClick={onClose} style={{
+                    width: '100%', padding: '12px', borderRadius: 12,
+                    border: 'none', background: '#3a3a3c', color: '#fff', fontSize: 15, cursor: 'pointer',
+                }}>{texts.close}</button>
+            </div>
+        </div>
+    );
+}
+
+// --- Hlavný komponent s malou ikonkou ---
 const DownloadIcon = () => (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
     </svg>
 );
 
@@ -258,7 +225,7 @@ export default function InstallButton({ t }) {
     const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
-        if (isStandalone()) return; // Už nainštalované — nič nezobrazuj
+        if (isStandalone()) return;
 
         const browser = detectBrowser();
         setBrowserType(browser);
@@ -268,7 +235,6 @@ export default function InstallButton({ t }) {
             return;
         }
 
-        // Chrome / Edge — čakáme na beforeinstallprompt
         const handler = (e) => {
             e.preventDefault();
             setDeferredPrompt(e);
@@ -283,9 +249,7 @@ export default function InstallButton({ t }) {
         if (!deferredPrompt) return;
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            setShowButton(false);
-        }
+        if (outcome === 'accepted') setShowButton(false);
         setDeferredPrompt(null);
     };
 
@@ -293,39 +257,21 @@ export default function InstallButton({ t }) {
 
     if (!showButton) return null;
 
-    const label = t?.install_button || 'Inštalovať';
-
+    // Malé tlačidlo – iba ikonka na mobile, s textom na desktop
     return (
         <>
-            {browserType === 'safari' ? (
-                <button
-                    onClick={handleManualInstall}
-                    className="flex items-center gap-2 bg-goral-600 hover:bg-goral-700 text-white px-3 py-2 rounded-lg text-sm font-body transition-all"
-                >
-                    <DownloadIcon />
-                    <span>Pridať na domovskú obrazovku</span>
-                </button>
-            ) : browserType === 'opera' || browserType === 'firefox' ? (
-                <button
-                    onClick={handleManualInstall}
-                    className="flex items-center gap-2 bg-goral-600 hover:bg-goral-700 text-white px-3 py-2 rounded-lg text-sm font-body transition-all"
-                >
-                    <DownloadIcon />
-                    <span>{label}</span>
-                </button>
-            ) : (
-                <button
-                    onClick={handleInstall}
-                    className="flex items-center gap-2 bg-river-500 hover:bg-river-600 text-white px-3 py-2 rounded-lg text-sm font-body transition-all"
-                >
-                    <DownloadIcon />
-                    <span>{label}</span>
-                </button>
-            )}
+            <button
+                onClick={browserType === 'chrome' ? handleInstall : handleManualInstall}
+                className="flex items-center justify-center w-8 h-8 sm:w-auto sm:px-3 sm:py-2 rounded-lg bg-goral-600 hover:bg-goral-700 text-white transition-all"
+                aria-label={t?.install_button || "Inštalovať"}
+            >
+                <DownloadIcon />
+                <span className="hidden sm:inline ml-2 text-sm">{t?.install_button || "Inštalovať"}</span>
+            </button>
 
-            {modalOpen && browserType === 'safari' && <SafariModal onClose={() => setModalOpen(false)} />}
-            {modalOpen && browserType === 'opera' && <OperaModal onClose={() => setModalOpen(false)} />}
-            {modalOpen && browserType === 'firefox' && <FirefoxModal onClose={() => setModalOpen(false)} />}
+            {modalOpen && browserType === 'safari' && <SafariModal onClose={() => setModalOpen(false)} t={t} />}
+            {modalOpen && browserType === 'opera' && <OperaModal onClose={() => setModalOpen(false)} t={t} />}
+            {modalOpen && browserType === 'firefox' && <FirefoxModal onClose={() => setModalOpen(false)} t={t} />}
         </>
     );
 }

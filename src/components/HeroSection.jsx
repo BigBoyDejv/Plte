@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import FolkDivider from './FolkDivider';
-import LanguageSelector from './LanguageSelector';
 
-export default function HeroSection({ t, currentLang, onChangeLang }) {
+export default function HeroSection({ t }) {
   return (
     <section className="relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Background */}
@@ -46,30 +45,37 @@ export default function HeroSection({ t, currentLang, onChangeLang }) {
           transition={{ duration: 1, delay: 0.3 }}
           className="text-lg sm:text-xl text-goral-200 font-body max-w-2xl mx-auto leading-relaxed mb-10"
         >
-          {t.hero_desc}
+          {t.hero_subtitle}
         </motion.p>
 
         <FolkDivider className="mb-10 opacity-60 justify-center" />
 
-        {/* Info badges */}
+        {/* Info badges - TERAZ S PREKLADMI */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           className="flex justify-center gap-4 flex-wrap"
         >
-          {[
-            { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", label: "~2 hodiny" },
-            { icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z", label: "6 zastavení" },
-            { icon: "M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129", label: "10 jazykov" },
-          ].map((item, i) => (
-            <div key={i} className="flex items-center gap-2 bg-goral-800/60 backdrop-blur-sm rounded-lg px-5 py-3 border border-goral-500/30">
-              <svg className="w-5 h-5 text-goral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
-              </svg>
-              <span className="text-goral-100 text-sm font-medium">{item.label}</span>
-            </div>
-          ))}
+          <div className="flex items-center gap-2 bg-goral-800/60 backdrop-blur-sm rounded-lg px-5 py-3 border border-goral-500/30">
+            <svg className="w-5 h-5 text-river-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-goral-100 text-sm font-medium">{t.duration}</span>
+          </div>
+          <div className="flex items-center gap-2 bg-goral-800/60 backdrop-blur-sm rounded-lg px-5 py-3 border border-goral-500/30">
+            <svg className="w-5 h-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="text-goral-100 text-sm font-medium">{t.stops_count}</span>
+          </div>
+          <div className="flex items-center gap-2 bg-goral-800/60 backdrop-blur-sm rounded-lg px-5 py-3 border border-goral-500/30">
+            <svg className="w-5 h-5 text-goral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+            <span className="text-goral-100 text-sm font-medium">{t.languages}</span>
+          </div>
         </motion.div>
       </div>
 
@@ -79,8 +85,6 @@ export default function HeroSection({ t, currentLang, onChangeLang }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
       </div>
-
-
     </section>
   );
 }

@@ -7,13 +7,16 @@ import FolkDivider from './FolkDivider';
 const tipAmounts = {
   sk: [1, 3, 5, 10],      // EUR
   en: [1, 3, 5, 10],       // EUR
-  pl: [4, 12, 20, 40],     // PLN (približne 1€ = 4 PLN)
+  pl: [4, 12, 20, 40],     // PLN
   de: [1, 3, 5, 10],       // EUR
-  hu: [400, 1200, 2000, 4000], // HUF (približne 1€ = 400 HUF)
-  cz: [25, 75, 125, 250],  // CZK (približne 1€ = 25 CZK)
+  hu: [400, 1200, 2000, 4000], // HUF
+  cz: [25, 75, 125, 250],  // CZK
   ru: [100, 300, 500, 1000], // RUB
   fr: [1, 3, 5, 10],       // EUR
   es: [1, 3, 5, 10],       // EUR
+  lv: [1, 3, 5, 10],       // EUR
+  lt: [1, 3, 5, 10],       // EUR
+  he: [4, 12, 20, 40],     // ILS (približne)
 };
 
 const currencySymbols = {
@@ -26,6 +29,9 @@ const currencySymbols = {
   ru: '₽',
   fr: '€',
   es: '€',
+  lv: '€',
+  lt: '€',
+  he: '₪',
 };
 
 export default function TipSection({ t, isRtl, lang }) {
@@ -39,19 +45,19 @@ export default function TipSection({ t, isRtl, lang }) {
   // Získanie správnych súm a meny podľa jazyka
   const currentAmounts = tipAmounts[lang] || tipAmounts.sk;
   const currencySymbol = currencySymbols[lang] || '€';
-  const currencyCode = lang === 'pl' ? 'PLN' : 'EUR';
 
   // Váš IBAN (upravte podľa seba)
   const IBAN = 'SK68 1234 5678 9012 3456 7890';
   const accountName = 'Dávid Rušin';
 
-  // Prevod sumy na EUR pre IBAN (IBAN je vždy v EUR)
+  // Prevod sumy na EUR pre IBAN
   const getAmountInEUR = (value) => {
     const rates = {
-      pl: 0.25,  // 1 PLN = 0.25 EUR
+      pl: 0.25,   // 1 PLN = 0.25 EUR
       hu: 0.0025, // 1 HUF = 0.0025 EUR
       cz: 0.04,   // 1 CZK = 0.04 EUR
       ru: 0.01,   // 1 RUB = 0.01 EUR
+      he: 0.27,   // 1 ILS = 0.27 EUR
     };
     const rate = rates[lang] || 1;
     return (value * rate).toFixed(2);
@@ -72,7 +78,6 @@ export default function TipSection({ t, isRtl, lang }) {
     setTimeout(() => setSent(false), 3000);
   };
 
-  // Generovanie QR kódu pre platbu (suma v EUR)
   const generatePaymentString = () => {
     const amountInEUR = getAmountInEUR(parseFloat(amount));
     return `iban:${IBAN.replace(/\s/g, '')}?amount=${amountInEUR}&name=${encodeURIComponent(accountName)}&msg=${encodeURIComponent(message || 'Tip')}`;
@@ -87,9 +92,9 @@ export default function TipSection({ t, isRtl, lang }) {
     cancel: t?.tip_cancel || "Zrušiť",
     send: t?.tip_send || "Pokračovať",
     thanks: t?.tip_thanks || "Ďakujeme za vašu podporu!",
-    qrTitle: "Skenujte QR kód",
-    qrInfo: "Naskenujte QR kód mobilom a dokončite platbu v internet bankingu.",
-    back: "Späť"
+    qrTitle: t?.qr_title || "Skenujte QR kód",
+    qrInfo: t?.qr_info || "Naskenujte QR kód mobilom a dokončite platbu v internet bankingu.",
+    back: t?.back || "Späť"
   };
 
   return (
@@ -121,7 +126,7 @@ export default function TipSection({ t, isRtl, lang }) {
                     {texts.title}
                   </h3>
                   <p className="text-goral-500 font-body text-sm sm:text-base mb-8">
-                    {texts.desc}
+                    {texts.desc}  {/* ← TERAZ POUŽÍVA t.tip_desc */}
                   </p>
 
                   <FolkDivider className="mb-8 lg:hidden" />

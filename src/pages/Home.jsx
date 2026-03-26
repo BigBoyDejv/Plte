@@ -49,7 +49,7 @@ export default function Home() {
         </div>
       </header>
 
-      <HeroSection t={t} currentLang={lang} onChangeLang={setLang} />
+      <HeroSection t={t} />
       <TripTracker t={t} />
 
       <div className="h-8 bg-goral-800 folk-pattern" />

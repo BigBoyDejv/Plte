@@ -52,16 +52,13 @@ export default function StopCard({ index, title, description, image, lang, t, di
           <div className="absolute inset-0 folk-pattern opacity-40" />
         </div>
 
-        {/* Image */}
+        {/* Image - BEZ BLIKANIA A BEZ PULZOVANIA */}
         <div className="relative h-56 sm:h-72 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-goral-200 to-river-200 animate-pulse" />
           <img
             src={image}
             alt={title}
             loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            onLoad={(e) => e.target.style.opacity = 1}
-            style={{ opacity: 0, transition: 'opacity 0.5s' }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-goral-900/60 via-transparent to-transparent" />
           <div className="absolute bottom-4 left-4 right-4">
@@ -101,7 +98,7 @@ export default function StopCard({ index, title, description, image, lang, t, di
                 <path d="M8 5v14l11-7z" />
               </svg>
             )}
-            {isLoading ? t.loading_audio : isPlaying ? t.stop_listening : t.listen}
+            {isLoading ? (t?.loading_audio || "Nahrávam...") : isPlaying ? (t?.stop_listening || "Zastaviť") : (t?.listen || "Vypočuť")}
           </button>
         </div>
 

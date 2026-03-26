@@ -4,14 +4,16 @@ import HeroSection from '../components/HeroSection';
 import StopCard from '../components/StopCard';
 import TipSection from '../components/TipSection';
 import FolkDivider from '../components/FolkDivider';
+import TripTracker from '../components/TripTracker';
+
 
 const stopImages = [
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Czerwony_Klasztor_01.jpg/1280px-Czerwony_Klasztor_01.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Dunajec_-_panoramio_%281%29.jpg/1280px-Dunajec_-_panoramio_%281%29.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Przełom_Dunajca_BM.jpg/1280px-Przełom_Dunajca_BM.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Dunajec_Gorge_in_Pieniny_Mountains.jpg/1280px-Dunajec_Gorge_in_Pieniny_Mountains.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Pieniny_-_Dunajec_01.jpg/1280px-Pieniny_-_Dunajec_01.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Szczawnica_-_center.jpg/1280px-Szczawnica_-_center.jpg",
+  "https://www.plte-dunajec.sk/images/plte_dunajec.jpg",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9yfB2LjruSx-CLZ8nGPgH32zzLrQwCzfLmrMNcUDZEO56NzfCbw4x8VJTZ--P9DxJlIM6Ae8p1VmYgIoYrDZGRiW96IFknaDUl7MMKH8&s=10",
+  "https://goralskydvor.sk/wp-content/uploads/2018/03/22950804.jpg",
+  "https://www.trzykorony.pl/files/page_content/big/153086332715b3f1edf27677966172628.webp",
+  "https://i.postimg.cc/jSzkNcYw/Snimka-obrazovky-2026-03-26-025805.png",
+  "https://cdn.seeandgo.sk/images/photoarchive/sized/700/2016/06/07/lavka01.jpg",
 ];
 
 export default function Home() {
@@ -45,7 +47,9 @@ export default function Home() {
         </div>
       </header>
 
-      <HeroSection t={t} currentLang={lang} onChangeLang={setLang} isRtl={isRtl} />
+      <HeroSection t={t} currentLang={lang} onChangeLang={setLang} />
+      <TripTracker t={t} />
+
 
       <div className="h-8 bg-goral-800 folk-pattern" />
 

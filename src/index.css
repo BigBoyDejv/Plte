@@ -43,36 +43,50 @@
 }
 
 @layer base {
-  * { @apply border-border outline-ring/50; }
-  body { @apply bg-background text-foreground; }
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 @layer components {
   .folk-pattern {
-    background-image: repeating-linear-gradient(
-      90deg,
-      transparent 0px, transparent 6px,
-      rgba(255,255,255,0.2) 6px, rgba(255,255,255,0.2) 8px,
-      transparent 8px, transparent 14px
-    );
+    background-image: repeating-linear-gradient(90deg,
+        transparent 0px, transparent 6px,
+        rgba(255, 255, 255, 0.2) 6px, rgba(255, 255, 255, 0.2) 8px,
+        transparent 8px, transparent 14px);
   }
 
   .flow-line {
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      #6e4c2b 20%,
-      #a67840 50%,
-      #6e4c2b 80%,
-      transparent 100%
-    );
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        #6e4c2b 20%,
+        #a67840 50%,
+        #6e4c2b 80%,
+        transparent 100%);
     background-size: 100% 200%;
     animation: flow-anim 3s ease-in-out infinite;
   }
 
+  .boat-marker {
+    background: none;
+    border: none;
+  }
+
   @keyframes flow-anim {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 0% 100%; }
-    100% { background-position: 0% 0%; }
+    0% {
+      background-position: 0% 0%;
+    }
+
+    50% {
+      background-position: 0% 100%;
+    }
+
+    100% {
+      background-position: 0% 0%;
+    }
   }
 }

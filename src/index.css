@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 30% 97%;
+    --foreground: 30 25% 12%;
+    --card: 40 30% 98%;
+    --card-foreground: 30 25% 12%;
+    --popover: 40 30% 98%;
+    --popover-foreground: 30 25% 12%;
+    --primary: 28 45% 35%;
+    --primary-foreground: 40 30% 97%;
+    --secondary: 28 20% 88%;
+    --secondary-foreground: 28 30% 20%;
+    --muted: 30 15% 90%;
+    --muted-foreground: 30 10% 45%;
+    --accent: 200 45% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 20% 82%;
+    --input: 30 20% 82%;
+    --ring: 28 45% 35%;
+    --chart-1: 28 45% 35%;
+    --chart-2: 200 45% 35%;
+    --chart-3: 140 40% 40%;
+    --chart-4: 40 70% 55%;
+    --chart-5: 0 60% 45%;
+    --radius: 0.75rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+}
+
+@layer components {
+  .folk-pattern {
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 6px,
+      rgba(255,255,255,0.2) 6px, rgba(255,255,255,0.2) 8px,
+      transparent 8px, transparent 14px
+    );
+  }
+
+  .flow-line {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #6e4c2b 20%,
+      #a67840 50%,
+      #6e4c2b 80%,
+      transparent 100%
+    );
+    background-size: 100% 200%;
+    animation: flow-anim 3s ease-in-out infinite;
+  }
+
+  @keyframes flow-anim {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+}

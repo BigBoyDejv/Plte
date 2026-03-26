@@ -6,7 +6,8 @@ import TipSection from '../components/TipSection';
 import FolkDivider from '../components/FolkDivider';
 import TripTracker from '../components/TripTracker';
 import Reviews from '../components/Reviews';
-import Footer from '../components/Footer';  // PRIDANÝ IMPORT
+import Footer from '../components/Footer';
+import Chatbot from '../components/Chatbot';
 
 const stopImages = [
   "https://www.plte-dunajec.sk/images/plte_dunajec.jpg",
@@ -97,10 +98,9 @@ export default function Home() {
         </div>
       </section>
 
-      <TipSection t={t} isRtl={isRtl} />
+      <TipSection t={t} isRtl={isRtl} lang={lang} />
       <Reviews t={t} />
-
-      {/* NOVÝ FOOTER KOMPONENT */}
+      <Chatbot t={t} />
       <Footer />
     </div>
   );

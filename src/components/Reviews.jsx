@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FolkDivider from './FolkDivider';
 
 // Google Apps Script URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-wJOKKquKzLIAVgNc8qCdtKLAtDZK-Wz7otnBOuszVYBM3vvzkMjbGOLMkOcFQQ7r/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfFez20wBmt55stBeeGwDnxfv7qvTyhv_NRmAOk3SxcdFkBF5jM1GQeEqOZu_dmCX3OQ/exec';
 
 export default function Reviews({ t }) {
     const [reviews, setReviews] = useState([]);

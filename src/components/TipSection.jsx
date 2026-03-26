@@ -1,37 +1,96 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
 import FolkDivider from './FolkDivider';
 
-const tipAmounts = [2, 5, 10, 20];
+// Prednastavené sumy pre rôzne meny
+const tipAmounts = {
+  sk: [1, 3, 5, 10],      // EUR
+  en: [1, 3, 5, 10],       // EUR
+  pl: [4, 12, 20, 40],     // PLN (približne 1€ = 4 PLN)
+  de: [1, 3, 5, 10],       // EUR
+  hu: [400, 1200, 2000, 4000], // HUF (približne 1€ = 400 HUF)
+  cz: [25, 75, 125, 250],  // CZK (približne 1€ = 25 CZK)
+  ru: [100, 300, 500, 1000], // RUB
+  fr: [1, 3, 5, 10],       // EUR
+  es: [1, 3, 5, 10],       // EUR
+};
 
-export default function TipSection({ t, isRtl }) {
+const currencySymbols = {
+  sk: '€',
+  en: '€',
+  pl: 'zł',
+  de: '€',
+  hu: 'Ft',
+  cz: 'Kč',
+  ru: '₽',
+  fr: '€',
+  es: '€',
+};
+
+export default function TipSection({ t, isRtl, lang }) {
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState('');
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(null);
+  const [showQR, setShowQR] = useState(false);
+
+  // Získanie správnych súm a meny podľa jazyka
+  const currentAmounts = tipAmounts[lang] || tipAmounts.sk;
+  const currencySymbol = currencySymbols[lang] || '€';
+  const currencyCode = lang === 'pl' ? 'PLN' : 'EUR';
+
+  // Váš IBAN (upravte podľa seba)
+  const IBAN = 'SK68 1234 5678 9012 3456 7890';
+  const accountName = 'Dávid Rušin';
+
+  // Prevod sumy na EUR pre IBAN (IBAN je vždy v EUR)
+  const getAmountInEUR = (value) => {
+    const rates = {
+      pl: 0.25,  // 1 PLN = 0.25 EUR
+      hu: 0.0025, // 1 HUF = 0.0025 EUR
+      cz: 0.04,   // 1 CZK = 0.04 EUR
+      ru: 0.01,   // 1 RUB = 0.01 EUR
+    };
+    const rate = rates[lang] || 1;
+    return (value * rate).toFixed(2);
+  };
 
   const handleSend = () => {
     if (!amount || parseFloat(amount) <= 0) return;
-    setSent(true);
-    setTimeout(() => {
-      setSent(false);
-      setShowForm(false);
-      setAmount('');
-      setMessage('');
-      setSelectedPreset(null);
-    }, 3000);
+    setShowQR(true);
   };
 
-  // Fallback texty, ak chýbajú v translations
-  const tipTitle = t?.tip_title || "Zanechajte tip pre pltníka";
-  const tipDesc = t?.tip_desc || "Páčila sa Vám plavba? Podporte nášho pltníka!";
-  const tipButton = t?.tip_button || "Zanechať tip";
-  const tipPlaceholder = t?.tip_placeholder || "Suma v €";
-  const tipMessage = t?.tip_message || "Správa pre pltníka (voliteľné)";
-  const tipCancel = t?.tip_cancel || "Zrušiť";
-  const tipSend = t?.tip_send || "Poslať";
-  const tipThanks = t?.tip_thanks || "Ďakujeme za tip!";
+  const handleCloseQR = () => {
+    setShowQR(false);
+    setShowForm(false);
+    setAmount('');
+    setMessage('');
+    setSelectedPreset(null);
+    setSent(true);
+    setTimeout(() => setSent(false), 3000);
+  };
+
+  // Generovanie QR kódu pre platbu (suma v EUR)
+  const generatePaymentString = () => {
+    const amountInEUR = getAmountInEUR(parseFloat(amount));
+    return `iban:${IBAN.replace(/\s/g, '')}?amount=${amountInEUR}&name=${encodeURIComponent(accountName)}&msg=${encodeURIComponent(message || 'Tip')}`;
+  };
+
+  const texts = {
+    title: t?.tip_title || "Zanechajte tip pre pltníka",
+    desc: t?.tip_desc || "Páčila sa Vám plavba? Podporte nášho pltníka!",
+    button: t?.tip_button || "Zanechať tip",
+    placeholder: t?.tip_placeholder || "Suma",
+    messagePlaceholder: t?.tip_message || "Správa pre pltníka (voliteľné)",
+    cancel: t?.tip_cancel || "Zrušiť",
+    send: t?.tip_send || "Pokračovať",
+    thanks: t?.tip_thanks || "Ďakujeme za vašu podporu!",
+    qrTitle: "Skenujte QR kód",
+    qrInfo: "Naskenujte QR kód mobilom a dokončite platbu v internet bankingu.",
+    back: "Späť"
+  };
 
   return (
     <section className="relative overflow-hidden">
@@ -39,7 +98,6 @@ export default function TipSection({ t, isRtl }) {
       <div className="bg-gradient-to-b from-goral-800 to-goral-900 py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4">
           <div className="relative bg-goral-50 rounded-2xl overflow-hidden shadow-2xl border-2 border-goral-300">
-            {/* Top stripe */}
             <div className="h-5 bg-gradient-to-r from-goral-700 via-goral-500 to-goral-700 relative overflow-hidden">
               <div className="absolute inset-0 folk-pattern opacity-40" />
             </div>
@@ -60,10 +118,10 @@ export default function TipSection({ t, isRtl }) {
                 {/* Content */}
                 <div className={`text-center lg:${isRtl ? 'text-right' : 'text-left'} flex-1`}>
                   <h3 className="text-3xl sm:text-4xl font-folk font-bold text-goral-900 tracking-wide mb-3">
-                    {tipTitle}
+                    {texts.title}
                   </h3>
                   <p className="text-goral-500 font-body text-sm sm:text-base mb-8">
-                    {tipDesc}
+                    {texts.desc}
                   </p>
 
                   <FolkDivider className="mb-8 lg:hidden" />
@@ -81,7 +139,45 @@ export default function TipSection({ t, isRtl }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <p className="font-folk text-xl font-bold text-forest-600">{tipThanks}</p>
+                        <p className="font-folk text-xl font-bold text-forest-600">{texts.thanks}</p>
+                      </motion.div>
+                    ) : showQR ? (
+                      <motion.div
+                        key="qr"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white rounded-2xl p-6 shadow-xl border-2 border-goral-200 w-full max-w-sm mx-auto lg:mx-0 text-center"
+                      >
+                        <h4 className="font-folk text-lg font-bold text-goral-800 mb-4">{texts.qrTitle}</h4>
+                        <QRCodeSVG
+                          value={generatePaymentString()}
+                          size={200}
+                          className="mx-auto mb-4"
+                          bgColor="#ffffff"
+                          fgColor="#2e1f12"
+                        />
+                        <p className="text-xs text-goral-500 mb-3">
+                          {texts.qrInfo}
+                        </p>
+                        <div className="bg-goral-50 rounded-lg p-2 mb-4">
+                          <p className="text-sm font-mono text-goral-700 break-all">
+                            {IBAN}
+                          </p>
+                          <p className="text-sm font-bold text-goral-800 mt-1">
+                            {parseFloat(amount).toFixed(2)} {currencySymbol}
+                          </p>
+                          {message && (
+                            <p className="text-xs text-goral-500 mt-1 italic">
+                              "{message}"
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          onClick={handleCloseQR}
+                          className="w-full py-2 rounded-xl bg-goral-700 hover:bg-goral-800 text-white transition-colors"
+                        >
+                          {texts.back}
+                        </button>
                       </motion.div>
                     ) : !showForm ? (
                       <motion.button
@@ -94,7 +190,7 @@ export default function TipSection({ t, isRtl }) {
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        {tipButton}
+                        {texts.button}
                       </motion.button>
                     ) : (
                       <motion.div
@@ -103,9 +199,8 @@ export default function TipSection({ t, isRtl }) {
                         animate={{ opacity: 1, y: 0 }}
                         className="bg-white rounded-2xl p-6 shadow-xl border-2 border-goral-200 w-full max-w-sm mx-auto lg:mx-0"
                       >
-                        {/* Preset amounts */}
                         <div className="grid grid-cols-4 gap-2 mb-4">
-                          {tipAmounts.map((val) => (
+                          {currentAmounts.map((val) => (
                             <button
                               key={val}
                               onClick={() => { setSelectedPreset(val); setAmount(val.toString()); }}
@@ -115,38 +210,45 @@ export default function TipSection({ t, isRtl }) {
                                   : 'border-goral-200 bg-goral-50 text-goral-700 hover:border-goral-400'
                                 }`}
                             >
-                              {val}€
+                              {val}{currencySymbol}
                             </button>
                           ))}
                         </div>
                         <div className="space-y-3">
-                          <input
-                            type="number"
-                            value={amount}
-                            onChange={(e) => { setAmount(e.target.value); setSelectedPreset(null); }}
-                            placeholder={tipPlaceholder}
-                            className="w-full px-4 py-3 rounded-xl border-2 border-goral-200 bg-goral-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-goral-400 focus:border-transparent"
-                          />
+                          <div className="relative">
+                            <input
+                              type="number"
+                              value={amount}
+                              onChange={(e) => { setAmount(e.target.value); setSelectedPreset(null); }}
+                              placeholder={texts.placeholder}
+                              min="1"
+                              step="1"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-goral-200 bg-goral-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-goral-400"
+                            />
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-goral-500 text-sm">
+                              {currencySymbol}
+                            </span>
+                          </div>
                           <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder={tipMessage}
+                            placeholder={texts.messagePlaceholder}
                             rows={2}
-                            className="w-full px-4 py-3 rounded-xl border-2 border-goral-200 bg-goral-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-goral-400 focus:border-transparent resize-none"
+                            className="w-full px-4 py-3 rounded-xl border-2 border-goral-200 bg-goral-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-goral-400 resize-none"
                           />
                           <div className="flex gap-3">
                             <button
                               onClick={() => { setShowForm(false); setSelectedPreset(null); setAmount(''); setMessage(''); }}
-                              className="flex-1 py-3 rounded-xl border-2 border-goral-300 text-goral-700 font-body font-semibold text-sm hover:bg-goral-100 transition-colors"
+                              className="flex-1 py-3 rounded-xl border-2 border-goral-300 text-goral-700 font-body font-semibold text-sm hover:bg-goral-100"
                             >
-                              {tipCancel}
+                              {texts.cancel}
                             </button>
                             <button
                               disabled={!amount || parseFloat(amount) <= 0}
                               onClick={handleSend}
-                              className="flex-1 py-3 rounded-xl bg-goral-700 hover:bg-goral-800 text-goral-50 font-body font-semibold text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-2 border-goral-800"
+                              className="flex-1 py-3 rounded-xl bg-goral-700 hover:bg-goral-800 text-goral-50 font-body font-semibold text-sm disabled:opacity-40"
                             >
-                              {tipSend}
+                              {texts.send}
                             </button>
                           </div>
                         </div>
@@ -157,7 +259,6 @@ export default function TipSection({ t, isRtl }) {
               </div>
             </div>
 
-            {/* Bottom stripe */}
             <div className="h-5 bg-gradient-to-r from-goral-700 via-goral-500 to-goral-700 relative overflow-hidden">
               <div className="absolute inset-0 folk-pattern opacity-40" />
             </div>

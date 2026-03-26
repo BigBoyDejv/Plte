@@ -46,7 +46,7 @@ export default function Home() {
             </svg>
             <span className="text-goral-100 font-water text-xl hidden sm:block">Dunajec</span>
           </div>
-          <InstallButton />
+          <InstallButton t={t} />
           <LangSelectorInHeader currentLang={lang} onChangeLang={setLang} />
         </div>
       </header>

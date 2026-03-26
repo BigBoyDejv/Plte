@@ -12,11 +12,26 @@ export default function TipSection({ t, isRtl }) {
   const [selectedPreset, setSelectedPreset] = useState(null);
 
   const handleSend = () => {
+    if (!amount || parseFloat(amount) <= 0) return;
     setSent(true);
     setTimeout(() => {
-      setSent(false); setShowForm(false); setAmount(''); setMessage(''); setSelectedPreset(null);
+      setSent(false);
+      setShowForm(false);
+      setAmount('');
+      setMessage('');
+      setSelectedPreset(null);
     }, 3000);
   };
+
+  // Fallback texty, ak chýbajú v translations
+  const tipTitle = t?.tip_title || "Zanechajte tip pre pltníka";
+  const tipDesc = t?.tip_desc || "Páčila sa Vám plavba? Podporte nášho pltníka!";
+  const tipButton = t?.tip_button || "Zanechať tip";
+  const tipPlaceholder = t?.tip_placeholder || "Suma v €";
+  const tipMessage = t?.tip_message || "Správa pre pltníka (voliteľné)";
+  const tipCancel = t?.tip_cancel || "Zrušiť";
+  const tipSend = t?.tip_send || "Poslať";
+  const tipThanks = t?.tip_thanks || "Ďakujeme za tip!";
 
   return (
     <section className="relative overflow-hidden">
@@ -45,10 +60,10 @@ export default function TipSection({ t, isRtl }) {
                 {/* Content */}
                 <div className={`text-center lg:${isRtl ? 'text-right' : 'text-left'} flex-1`}>
                   <h3 className="text-3xl sm:text-4xl font-folk font-bold text-goral-900 tracking-wide mb-3">
-                    {t.tip_title}
+                    {tipTitle}
                   </h3>
                   <p className="text-goral-500 font-body text-sm sm:text-base mb-8">
-                    {t.tip_desc}
+                    {tipDesc}
                   </p>
 
                   <FolkDivider className="mb-8 lg:hidden" />
@@ -66,7 +81,7 @@ export default function TipSection({ t, isRtl }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <p className="font-folk text-xl font-bold text-forest-600">{t.tip_thanks}</p>
+                        <p className="font-folk text-xl font-bold text-forest-600">{tipThanks}</p>
                       </motion.div>
                     ) : !showForm ? (
                       <motion.button
@@ -79,14 +94,14 @@ export default function TipSection({ t, isRtl }) {
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        {t.tip_button}
+                        {tipButton}
                       </motion.button>
                     ) : (
                       <motion.div
                         key="form"
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white rounded-2xl p-6 shadow-xl border-2 border-goral-200 max-w-sm"
+                        className="bg-white rounded-2xl p-6 shadow-xl border-2 border-goral-200 w-full max-w-sm mx-auto lg:mx-0"
                       >
                         {/* Preset amounts */}
                         <div className="grid grid-cols-4 gap-2 mb-4">
@@ -109,29 +124,29 @@ export default function TipSection({ t, isRtl }) {
                             type="number"
                             value={amount}
                             onChange={(e) => { setAmount(e.target.value); setSelectedPreset(null); }}
-                            placeholder={t.tip_placeholder}
+                            placeholder={tipPlaceholder}
                             className="w-full px-4 py-3 rounded-xl border-2 border-goral-200 bg-goral-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-goral-400 focus:border-transparent"
                           />
                           <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder={t.tip_message}
+                            placeholder={tipMessage}
                             rows={2}
                             className="w-full px-4 py-3 rounded-xl border-2 border-goral-200 bg-goral-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-goral-400 focus:border-transparent resize-none"
                           />
                           <div className="flex gap-3">
                             <button
-                              onClick={() => { setShowForm(false); setSelectedPreset(null); setAmount(''); }}
+                              onClick={() => { setShowForm(false); setSelectedPreset(null); setAmount(''); setMessage(''); }}
                               className="flex-1 py-3 rounded-xl border-2 border-goral-300 text-goral-700 font-body font-semibold text-sm hover:bg-goral-100 transition-colors"
                             >
-                              {t.tip_cancel}
+                              {tipCancel}
                             </button>
                             <button
                               disabled={!amount || parseFloat(amount) <= 0}
                               onClick={handleSend}
-                              className="flex-1 py-3 rounded-xl bg-goral-700 hover:bg-goral-800 text-goral-50 font-body font-semibold text-sm transition-colors disabled:opacity-40 border-2 border-goral-800"
+                              className="flex-1 py-3 rounded-xl bg-goral-700 hover:bg-goral-800 text-goral-50 font-body font-semibold text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-2 border-goral-800"
                             >
-                              {t.tip_send}
+                              {tipSend}
                             </button>
                           </div>
                         </div>

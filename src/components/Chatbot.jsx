@@ -1277,16 +1277,20 @@ const knowledgeBase = {
 
 // Predvolené odpovede pre každý jazyk
 const defaultAnswers = {
-    sk: "Prepáč, nerozumel som. Skús sa opýtať inak, alebo nás kontaktuj na info@plte-dunajec.sk",
-    en: "Sorry, I didn't understand. Try asking differently, or contact us at info@plte-dunajec.sk",
-    pl: "Przepraszam, nie zrozumiałem. Spróbuj zapytać inaczej, lub skontaktuj się z nami na info@plte-dunajec.sk",
-    de: "Entschuldigung, ich habe nicht verstanden. Versuchen Sie es anders zu fragen oder kontaktieren Sie uns unter info@plte-dunajec.sk",
-    hu: "Elnézést, nem értettem. Próbáld másképp kérdezni, vagy írj nekünk az info@plte-dunajec.sk címre",
-    cz: "Promiň, nerozuměl jsem. Zkus se zeptat jinak, nebo nás kontaktuj na info@plte-dunajec.sk",
-    ru: "Извините, я не понял. Попробуйте спросить иначе или свяжитесь с нами по адресу info@plte-dunajec.sk",
-    fr: "Désolé, je n'ai pas compris. Essayez de demander différemment, ou contactez-nous à info@plte-dunajec.sk",
-    es: "Lo siento, no entendí. Intenta preguntar de otra manera, o contáctanos en info@plte-dunajec.sk"
+    sk: "Prepáč, nerozumel som. Skús sa opýtať inak, alebo sa opýtaj priamo pltníka – radi vám odpovedia! 😊",
+    en: "Sorry, I didn't understand. Try asking differently, or ask the raftsman directly – they'll be happy to answer! 😊",
+    pl: "Przepraszam, nie zrozumiałem. Spróbuj zapytać inaczej, lub zapytaj flisaka – chętnie odpowiedzą! 😊",
+    de: "Entschuldigung, ich habe nicht verstanden. Versuchen Sie es anders zu fragen oder fragen Sie den Flößer direkt – sie helfen gerne! 😊",
+    hu: "Elnézést, nem értettem. Próbáld másképp kérdezni, vagy kérdezd meg a tutajost – szívesen válaszolnak! 😊",
+    cz: "Promiň, nerozuměl jsem. Zkus se zeptat jinak, nebo se zeptej voraře – rádi ti odpoví! 😊",
+    ru: "Извините, я не понял. Попробуйте спросить иначе или спросите плотогона – они с радостью ответят! 😊",
+    fr: "Désolé, je n'ai pas compris. Essayez de demander différemment, ou demandez directement au radeleur – ils se feront un plaisir de vous répondre ! 😊",
+    es: "Lo siento, no entendí. Intenta preguntar de otra manera, o pregúntale al balsero directamente – ¡estarán encantados de responderte! 😊",
+    lv: "Atvaino, nesapratu. Mēģiniet pajautāt citādi, vai pajautājiet plostniekam – viņi ar prieku atbildēs! 😊",
+    lt: "Atsiprašau, nesupratau. Pabandykite paklausti kitaip, arba paklauskite plaustų vairininko – jie mielai atsakys! 😊",
+    he: "סליחה, לא הבנתי. נסה לשאול אחרת, או שאל את הספן – הם ישמחו לענות! 😊"
 };
+
 
 // ==================== KOMPONENT CHATBOTA ====================
 export default function Chatbot({ t, lang }) {

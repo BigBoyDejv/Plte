@@ -8,6 +8,7 @@ import TripTracker from '../components/TripTracker';
 import Reviews from '../components/Reviews';
 import Footer from '../components/Footer';
 import Chatbot from '../components/Chatbot';
+import InstallButton from '../components/InstallButton';
 
 const stopImages = [
   "https://www.plte-dunajec.sk/images/plte_dunajec.jpg",
@@ -45,6 +46,7 @@ export default function Home() {
             </svg>
             <span className="text-goral-100 font-water text-xl hidden sm:block">Dunajec</span>
           </div>
+          <InstallButton />
           <LangSelectorInHeader currentLang={lang} onChangeLang={setLang} />
         </div>
       </header>

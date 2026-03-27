@@ -17,6 +17,23 @@ const stopImages = [
   "https://www.trzykorony.pl/files/page_content/big/153086332715b3f1edf27677966172628.webp",
   "https://i.postimg.cc/jSzkNcYw/Snimka-obrazovky-2026-03-26-025805.png",
   "https://cdn.seeandgo.sk/images/photoarchive/sized/700/2016/06/07/lavka01.jpg",
+  "https://malevelkecesty.sk/wp-content/uploads/2020/09/IMG-6296-970x658.jpg",
+  "https://lh3.googleusercontent.com/gps-cs-s/AHVAwerlmH3nTkD8BU5AqMv46wvRwHJ2lGOQGGp9l-HUSgXvb1zPzko1iKq4esS6l3eKPJl5kdSgvJOcdOT3iIJz9xl0I7rDsyTer7JQTNLDDNnHn1DQQViF36JhoxxIsZ7sLZIWC7escw=w810-h468-n-k-no",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Pieniny_Ostra_Skala_1.jpg/4000px-Pieniny_Ostra_Skala_1.jpg",
+  "https://greenfilmtourism.eu/upload/inspiracje/SKPINS/SK_P_INS01.jpg",
+  "https://antiquavilla.sk/wp-content/uploads/2024/06/WhatsApp-Image-2021-07-01-at-11.06.12-1.jpeg",
+  "https://i.ytimg.com/vi/ZlvWur_7JrQ/hqdefault.jpg",
+  "https://files.slovakia.travel/_processed_/csm_Prielom%2520Dunajca%2520Icon%2520003_0c45a0baf2.jpg",
+  "https://vylety.online/wp-content/uploads/2020/11/20120527_1205_0580-768x512.jpg",
+  "https://img.projektn.sk/wp-static/2025/07/IMG8616.jpg?w=640&fm=jpg&q=85",
+  "https://images-sp.summitpost.org/tr:e-sharpen,e-contrast-1,fit-max,q-60,w-500/823163.jpg",
+  "https://www.tatrysimi.sk/wp-content/uploads/2020/05/Dravy-dunajec.jpg",
+  "https://img.freepik.com/premium-photo/dunajec-river-gorge-pieniny-national-park-spring-poland_643825-1561.jpg",
+  "https://cdn-5c6ca782f911ca1b2cef5e4c.closte.com/wp-content/uploads/2022/07/SplywDunajcem-9-600x400.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/0/0c/Sama_Jedna_a1.jpg",
+  "https://www.cestovnicek.sk/wp-content/uploads/lesnica-pristav-plte-splavovanie-dunajca-1-scaled.jpg",
+
+
 ];
 
 export default function Home() {
@@ -32,6 +49,21 @@ export default function Home() {
     { title: t.stop4_title, desc: t.stop4_desc },
     { title: t.stop5_title, desc: t.stop5_desc },
     { title: t.stop6_title, desc: t.stop6_desc },
+    { title: t.stop7_title, desc: t.stop7_desc },
+    { title: t.stop8_title, desc: t.stop8_desc },
+    { title: t.stop9_title, desc: t.stop9_desc },
+    { title: t.stop10_title, desc: t.stop10_desc },
+    { title: t.stop11_title, desc: t.stop11_desc },
+    { title: t.stop12_title, desc: t.stop12_desc },
+    { title: t.stop13_title, desc: t.stop13_desc },
+    { title: t.stop14_title, desc: t.stop14_desc },
+    { title: t.stop15_title, desc: t.stop15_desc },
+    { title: t.stop16_title, desc: t.stop16_desc },
+    { title: t.stop17_title, desc: t.stop17_desc },
+    { title: t.stop18_title, desc: t.stop18_desc },
+    { title: t.stop19_title, desc: t.stop19_desc },
+    { title: t.stop20_title, desc: t.stop20_desc },
+    { title: t.stop21_title, desc: t.stop21_desc },
   ];
 
   return (

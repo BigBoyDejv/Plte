@@ -1,61 +1,90 @@
-// Presná trasa Dunajca z vášho merania
 export const routePoints = [
-    { lat: 49.3895811, lng: 20.3837800, name: "Štart", time: 0 },
-    { lat: 49.3889000, lng: 20.3879281, name: "", time: 0.02 },
-    { lat: 49.3895056, lng: 20.3933086, name: "", time: 0.04 },
-    { lat: 49.3911431, lng: 20.3974392, name: "", time: 0.06 },
-    { lat: 49.3920858, lng: 20.4025783, name: "", time: 0.08 },
-    { lat: 49.3936006, lng: 20.4086400, name: "", time: 0.10 },
-    { lat: 49.3946344, lng: 20.4103997, name: "", time: 0.12 },
-    { lat: 49.3958356, lng: 20.4130603, name: "", time: 0.14 },
-    { lat: 49.3975125, lng: 20.4144403, name: "", time: 0.16 },
-    { lat: 49.4004522, lng: 20.4142592, name: "", time: 0.18 },
-    { lat: 49.4029481, lng: 20.4140794, name: "", time: 0.20 },
-    { lat: 49.4051072, lng: 20.4150344, name: "", time: 0.22 },
-    { lat: 49.4058675, lng: 20.4185817, name: "", time: 0.24 },
-    { lat: 49.4046075, lng: 20.4220122, name: "", time: 0.26 },
-    { lat: 49.4036408, lng: 20.4235800, name: "", time: 0.28 },
-    { lat: 49.4029292, lng: 20.4263642, name: "", time: 0.30 }, // 49°24'10.545"N 20°25'34.911"E
-    { lat: 49.4015606, lng: 20.4282953, name: "", time: 0.32 }, // 49°24'5.618"N 20°25'41.863"E
-    { lat: 49.3991589, lng: 20.4294969, name: "", time: 0.34 }, // 49°23'56.972"N 20°25'46.189"E
-    { lat: 49.3975389, lng: 20.4301408, name: "", time: 0.36 }, // 49°23'51.140"N 20°25'48.507"E
-    { lat: 49.3961692, lng: 20.4310564, name: "", time: 0.38 }, // 49°23'46.209"N 20°25'51.802"E
-    { lat: 49.3965744, lng: 20.4330289, name: "", time: 0.40 }, // 49°23'47.666"N 20°25'58.904"E
-    { lat: 49.3982100, lng: 20.4344206, name: "", time: 0.42 }, // 49°23'52.956"N 20°26'3.914"E
-    { lat: 49.4005756, lng: 20.4340200, name: "", time: 0.44 }, // 49°24'2.072"N 20°26'2.472"E
-    { lat: 49.4030219, lng: 20.4349914, name: "", time: 0.46 }, // 49°24'10.879"N 20°26'5.969"E
-    { lat: 49.4050236, lng: 20.4363206, name: "", time: 0.48 }, // 49°24'18.085"N 20°26'10.754"E
-    { lat: 49.4066153, lng: 20.4368783, name: "", time: 0.50 }, // 49°24'23.815"N 20°26'12.762"E
-    { lat: 49.4086000, lng: 20.4360000, name: "", time: 0.52 },
-    { lat: 49.4085419, lng: 20.4326297, name: "", time: 0.54 }, // 49°24'30.751"N 20°25'57.467"E
-    { lat: 49.4081992, lng: 20.4304828, name: "", time: 0.56 }, // 49°24'29.517"N 20°25'49.738"E
-    { lat: 49.4081597, lng: 20.4292667, name: "", time: 0.58 }, // 49°24'29.375"N 20°25'45.360"E
-    { lat: 49.4100194, lng: 20.4292825, name: "", time: 0.60 },
+    // === ŠTART (viditeľný) ===
+    { id: 1000, lat: 49.3895811, lng: 20.3837800, name: "Štart", time: 0, showOnMap: true },
 
+    // Medziľahlé body (skryté)
+    { id: 1, lat: 49.3888156, lng: 20.3870953, name: "Úvod", time: 1.2, showOnMap: true },
+    { id: 3000, lat: 49.3889636, lng: 20.3907336, name: "", time: 2.4, showOnMap: false },
+    { id: 2, lat: 49.3897039, lng: 20.3937197, name: "Pre rybárov", time: 3.6, showOnMap: true },
+    { id: 5000, lat: 49.3907144, lng: 20.3965181, name: "", time: 4.8, showOnMap: false },
+    { id: 3, lat: 49.3916875, lng: 20.3994067, name: "Prístav Červený Kláštor", time: 6.0, showOnMap: true },
+    { id: 7000, lat: 49.3921122, lng: 20.4025189, name: "", time: 7.2, showOnMap: false },
+    { id: 4, lat: 49.3924667, lng: 20.4053356, name: "Dedina Sromowce Niżne", time: 8.4, showOnMap: true },
+    { id: 5, lat: 49.3932467, lng: 20.4083022, name: "Dedina Červený Kláštor", time: 9.6, showOnMap: true },
+    { id: 6, lat: 49.3941044, lng: 20.4104100, name: "Most", time: 10.8, showOnMap: true },
+    { id: 1100, lat: 49.3952972, lng: 20.4124150, name: "", time: 12.0, showOnMap: false },
+    { id: 7, lat: 49.3965258, lng: 20.4139681, name: "Tri Koruny", time: 13.2, showOnMap: true },
+    { id: 8, lat: 49.3980650, lng: 20.4146542, name: "Červený Kláštor", time: 14.4, showOnMap: true },
+    { id: 1400, lat: 49.3996653, lng: 20.4144956, name: "", time: 15.6, showOnMap: false },
+    { id: 1500, lat: 49.4012542, lng: 20.4141386, name: "", time: 16.8, showOnMap: false },
+    { id: 1600, lat: 49.4032847, lng: 20.4141397, name: "", time: 18.0, showOnMap: false },
+    { id: 9, lat: 49.4049286, lng: 20.4151344, name: "Ostrá Skala", time: 19.2, showOnMap: true },
+    { id: 1800, lat: 49.4057258, lng: 20.4172467, name: "", time: 20.4, showOnMap: false },
+    { id: 1900, lat: 49.4055614, lng: 20.4197369, name: "", time: 21.6, showOnMap: false },
+    { id: 2000, lat: 49.4046833, lng: 20.4218494, name: "", time: 22.8, showOnMap: false },
+    { id: 2100, lat: 49.4038858, lng: 20.4236400, name: "", time: 24.0, showOnMap: false },
+    { id: 10, lat: 49.4029683, lng: 20.4259150, name: "Jánošíkov skok", time: 25.2, showOnMap: true },
+    { id: 23, lat: 49.4020989, lng: 20.4278564, name: "", time: 26.4, showOnMap: false },
+    { id: 24, lat: 49.4011092, lng: 20.4286453, name: "", time: 27.6, showOnMap: false },
+    { id: 11, lat: 49.3998103, lng: 20.4293239, name: "Tradicia pltnictva", time: 28.8, showOnMap: true },
+    { id: 26, lat: 49.3984233, lng: 20.4298039, name: "", time: 30.0, showOnMap: false },
+    { id: 27, lat: 49.3973186, lng: 20.4303869, name: "", time: 31.2, showOnMap: false },
+    { id: 28, lat: 49.3963217, lng: 20.4308092, name: "", time: 32.4, showOnMap: false },
+    { id: 12, lat: 49.3958267, lng: 20.4315231, name: "Biela bodka", time: 33.6, showOnMap: true },
+    { id: 30, lat: 49.3963117, lng: 20.4326475, name: "", time: 34.8, showOnMap: false },
+    { id: 31, lat: 49.3973117, lng: 20.4337300, name: "", time: 36.0, showOnMap: false },
+    { id: 32, lat: 49.3985172, lng: 20.4346742, name: "", time: 37.2, showOnMap: false },
+    { id: 33, lat: 49.4001633, lng: 20.4343308, name: "", time: 38.4, showOnMap: false },
+    { id: 13, lat: 49.4020828, lng: 20.4343100, name: "Holica", time: 39.6, showOnMap: true },
+    { id: 35, lat: 49.4036367, lng: 20.4353556, name: "", time: 40.8, showOnMap: false },
+    { id: 36, lat: 49.4049383, lng: 20.4363842, name: "", time: 42.0, showOnMap: false },
+    { id: 37, lat: 49.4062353, lng: 20.4370486, name: "", time: 43.2, showOnMap: false },
+    { id: 38, lat: 49.4074494, lng: 20.4363594, name: "", time: 44.4, showOnMap: false },
+    { id: 39, lat: 49.4081347, lng: 20.4345283, name: "", time: 45.6, showOnMap: false },
+    { id: 40, lat: 49.4082783, lng: 20.4330244, name: "", time: 46.8, showOnMap: false },
+    { id: 41, lat: 49.4082042, lng: 20.4316492, name: "", time: 48.0, showOnMap: false },
+    { id: 14, lat: 49.4078503, lng: 20.4303942, name: "Fačmeh", time: 49.2, showOnMap: true },
+    { id: 43, lat: 49.4078111, lng: 20.4293044, name: "", time: 50.4, showOnMap: false },
+    { id: 44, lat: 49.4083594, lng: 20.4289175, name: "", time: 51.6, showOnMap: false },
+    { id: 45, lat: 49.4096344, lng: 20.4292928, name: "", time: 52.8, showOnMap: false },
+    { id: 46, lat: 49.4110264, lng: 20.4293228, name: "", time: 54.0, showOnMap: false },
+    { id: 15, lat: 49.4126625, lng: 20.4291094, name: "Výbava plte", time: 55.2, showOnMap: true },
+    { id: 48, lat: 49.4139294, lng: 20.4293539, name: "", time: 56.4, showOnMap: false },
+    { id: 49, lat: 49.4154133, lng: 20.4295594, name: "", time: 57.6, showOnMap: false },
+    { id: 50, lat: 49.4164436, lng: 20.4300119, name: "", time: 58.8, showOnMap: false },
+    { id: 51, lat: 49.4172119, lng: 20.4313319, name: "", time: 60.0, showOnMap: false },
+    { id: 52, lat: 49.4178117, lng: 20.4329303, name: "", time: 61.2, showOnMap: false },
+    { id: 16, lat: 49.4180072, lng: 20.4344322, name: "Sokolica", time: 62.4, showOnMap: true },
+    { id: 54, lat: 49.4177278, lng: 20.4363633, name: "", time: 63.6, showOnMap: false },
+    { id: 55, lat: 49.4165553, lng: 20.4372647, name: "", time: 64.8, showOnMap: false },
+    { id: 56, lat: 49.4154106, lng: 20.4379514, name: "", time: 66.0, showOnMap: false },
+    { id: 57, lat: 49.4145647, lng: 20.4389408, name: "", time: 67.2, showOnMap: false },
+    { id: 58, lat: 49.4144894, lng: 20.4410842, name: "", time: 68.4, showOnMap: false },
+    { id: 59, lat: 49.4138261, lng: 20.4428983, name: "", time: 69.6, showOnMap: false },
+    { id: 60, lat: 49.4130375, lng: 20.4441739, name: "", time: 70.8, showOnMap: false },
+    { id: 17, lat: 49.4121206, lng: 20.4455381, name: "Svokrine ústa", time: 72.0, showOnMap: true },
+    { id: 62, lat: 49.4120044, lng: 20.4475644, name: "", time: 73.2, showOnMap: false },
+    { id: 18, lat: 49.4121439, lng: 20.4495383, name: "Storočný prameň", time: 74.4, showOnMap: true },
+    { id: 19, lat: 49.4126186, lng: 20.4511692, name: "Baňa", time: 75.6, showOnMap: true },
+    { id: 20, lat: 49.4133167, lng: 20.4505683, name: "Osobitá skala", time: 76.8, showOnMap: false },
+    { id: 2113, lat: 49.4138472, lng: 20.4489806, name: "", time: 78.0, showOnMap: false },
+    { id: 22, lat: 49.4146011, lng: 20.4474356, name: "", time: 79.2, showOnMap: false },
+    { id: 23, lat: 49.4153547, lng: 20.4459764, name: "", time: 80.4, showOnMap: false },
+    { id: 24, lat: 49.4162203, lng: 20.4457189, name: "", time: 81.6, showOnMap: false },
 
-    { lat: 49.4118311, lng: 20.4293683, name: "", time: 0.62 }, // 49°24'38.592"N 20°25'45.726"E
-    { lat: 49.4136428, lng: 20.4290250, name: "", time: 0.64 }, // 49°24'43.115"N 20°25'44.490"E
-    { lat: 49.4158733, lng: 20.4293683, name: "", time: 0.66 }, // 49°24'48.744"N 20°25'45.726"E
-    { lat: 49.4188836, lng: 20.4297117, name: "", time: 0.68 }, // 49°24'55.981"N 20°25'46.962"E
-    { lat: 49.4223931, lng: 20.4317286, name: "", time: 0.70 }, // 49°25'2.615"N 20°25'54.223"E
-    { lat: 49.4235347, lng: 20.4346039, name: "", time: 0.72 }, // 49°25'4.725"N 20°26'4.574"E
-    { lat: 49.4228364, lng: 20.4380831, name: "", time: 0.74 }, // 49°25'2.213"N 20°26'12.299"E
-    { lat: 49.4210525, lng: 20.4384464, name: "", time: 0.76 }, // 49°24'57.187"N 20°26'16.007"E
-    { lat: 49.4192525, lng: 20.4384858, name: "", time: 0.78 }, // 49°24'52.709"N 20°26'18.549"E
-    { lat: 49.4192344, lng: 20.4404403, name: "", time: 0.80 }, // 49°24'52.564"N 20°26'25.585"E
-    { lat: 49.4184033, lng: 20.4433564, name: "", time: 0.82 }, // 49°24'50.252"N 20°26'34.083"E
-    { lat: 49.4161194, lng: 20.4442597, name: "", time: 0.84 }, // 49°24'46.030"N 20°26'39.335"E
-    { lat: 49.4146914, lng: 20.4464322, name: "", time: 0.86 }, // 49°24'42.889"N 20°26'47.116"E
-    { lat: 49.4148658, lng: 20.4479936, name: "", time: 0.88 }, // 49°24'43.517"N 20°26'52.777"E
-    { lat: 49.4147839, lng: 20.4501822, name: "", time: 0.90 }, // 49°24'44.020"N 20°27'0.656"E
-    { lat: 49.4166222, lng: 20.4506972, name: "", time: 0.92 }, // 49°24'47.840"N 20°27'2.510"E
-    { lat: 49.4179872, lng: 20.4487600, name: "", time: 0.94 }, // 49°24'50.754"N 20°26'55.712"E
-    { lat: 49.4196708, lng: 20.4467803, name: "", time: 0.96 }, // 49°24'54.574"N 20°26'47.369"E
-    { lat: 49.4164650, lng: 20.4464564, name: "Cieľ", time: 1.5 },
+    // === CIEĽ (viditeľný) ===
+    { id: 21, lat: 49.4164650, lng: 20.4464564, name: "Cieľ", time: 83.0, showOnMap: true },
 ];
 
-// Celková dĺžka plavby v minútach (90 minút = 1.5 hodiny)
-export const totalTime = 90;
+// Funkcia na získanie iba viditeľných bodov
+export const visibleRoutePoints = routePoints.filter(point =>
+    point.name &&
+    point.name !== '' &&
+    !point.name.includes('Bod')
+);
+
+export const totalTime = 100;
+
 
 // Funkcia na výpočet pozície podľa času (v sekundách)
 export function getPositionAtTime(elapsedSeconds) {
@@ -74,7 +103,7 @@ export function getPositionAtTime(elapsedSeconds) {
             const ratio = (elapsedMinutes - time1) / (time2 - time1);
             const lat = p1.lat + (p2.lat - p1.lat) * ratio;
             const lng = p1.lng + (p2.lng - p1.lng) * ratio;
-            return { lat, lng, name: p1.name };
+            return { lat, lng, name: p1.name, id: p1.id };
         }
     }
     return routePoints[0];

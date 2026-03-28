@@ -8,7 +8,7 @@ const knowledgeBase = {
     // SLOVENČINA
     sk: [
         {
-            keywords: ['rezervácia', 'rezervovať', 'vopred', 'dopredu', 'book', 'miesto', 'termín', 'skupina', '12 osôb', 'rezervacia', 'rezervovat', 'termin', 'skupina', '12 osob'],
+            keywords: ['rezervácia', 'nahlásiť', 'nahlasit', 'rezervovať', 'vopred', 'dopredu', 'book', 'miesto', 'termín', 'skupina', '12 osôb', 'rezervacia', 'rezervovat', 'termin', 'skupina', '12 osob'],
             answer: 'Rezervácia vopred nie je nutná, ale odporúčame aspoň deň vopred telefonicky si overiť časy splavov, aby ste sa vyhli dlhému čakaniu. Pre väčšie skupiny (viac ako 12 osôb) je potrebné rezervovať minimálne deň vopred, najlepšie 3 dni.'
         },
         {
@@ -116,7 +116,7 @@ const knowledgeBase = {
             answer: 'Toalety sú k dispozícii pri nástupnom mieste (prístavisku). Počas samotného splavu sa zastávky na toaletu nerobia.'
         },
         {
-            keywords: ['jazyk', 'anglicky', 'poľsky', 'sprievodca', 'výklad', 'polsky', 'vyklad'],
+            keywords: ['jazyk', 'anglicky', 'poľsky', 'sprievodca', 'výklad', 'polsky', 'vyklad', 'povesť', 'povesti', 'povest'],
             answer: 'Pltníci často poskytujú výklad počas plavby. Okrem slovenčiny sa vedia dohovoriť aj poľsky, niektorí aj anglicky.'
         },
         {
@@ -126,6 +126,14 @@ const knowledgeBase = {
         {
             keywords: ['autobus', 'vlak', 'ako sa dostať bez auta', 'doprava', 'dostat sa bez auta'],
             answer: 'Do Červeného Kláštora sa dostanete aj autobusom. Najbližšia vlaková stanica je v Starej Ľubovni, odkiaľ pokračujete autobusom.'
+        },
+        {
+            keywords: ['koľko ľudí', 'kolko ludi', 'kapacita', 'maximálne', 'osôb', 'ľudia na plti', 'koľko miesta', 'veľkosť skupiny', 'počet osôb', 'kolko ludi', 'max ludi', 'kapacita plte', 'koľko ľudí môže byť', 'na jednej plti', 'ľudí na plti', 'maximálny počet'],
+            answer: 'Na jednej tradičnej drevenej plti môže byť maximálne 12 osôb vrátane pltníka. Plť je navrhnutá tak, aby bola bezpečná a stabilná. Pre väčšie skupiny (viac ako 12 osôb) je potrebné rezervovať viac pltí vopred, ideálne aspoň 3 dni vopred. Pri rezervácii prosím uveďte celkový počet osôb, aby sme vedeli pripraviť dostatočný počet pltí.'
+        },
+        {
+            keywords: ['volá pltník', 'vola pltnik', 'nazyva pltnik', 'náš pltník', 'nas pltnik', 'volá', 'meno pltníka', 'sprievodca', 'kto nás sprevádza', 'ako sa volá', 'kto je pltník', 'pltník meno', 'meno sprievodcu', 'sprevádza nás', 'kto je náš pltník', 'čo je to za človeka', 'pán pltník', 'kto vedie plt', 'náš sprievodca'],
+            answer: 'Váš sprievodca a pltník sa volá Dávid Rušin. Má 22 rokov, na Dunajci pracuje už 8 sezón, takže má bohaté skúsenosti s plavbou. Popri pltníctve je študentom technickej školy. Okrem rodnej slovenčiny hovorí plynule poľsky a anglicky, takže sa s ním bez problémov dohovoríte. Spýtajte sa ho na čokoľvek o rieke, histórii alebo miestnych legendách – rád vám porozpráva!'
         },
         {
             keywords: ['jedlo', 'občerstvenie', 'bufet', 'reštaurácia', 'piť', 'obcerstvenie', 'restauracia', 'pit'],

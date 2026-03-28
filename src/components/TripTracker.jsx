@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import MapView from './MapView';
 
-export default function TripTracker({ t }) {
+export default function TripTracker({ t, onMarkerClick }) {
     const [isActive, setIsActive] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [startTime, setStartTime] = useState(null);
+
+    const TOTAL_TIME_SECONDS = 6000; // 100 minút = 1 hod 40 min
 
     // Načítanie uloženého stavu
     useEffect(() => {
@@ -13,7 +15,7 @@ export default function TripTracker({ t }) {
             const { active, start, elapsed } = JSON.parse(saved);
             if (active && start) {
                 const newElapsed = Math.floor((Date.now() - start) / 1000);
-                if (newElapsed < 5400) { // 90 minút
+                if (newElapsed < TOTAL_TIME_SECONDS) {
                     setIsActive(true);
                     setStartTime(start);
                     setElapsedTime(newElapsed);
@@ -41,9 +43,9 @@ export default function TripTracker({ t }) {
         if (isActive) {
             interval = setInterval(() => {
                 const newElapsed = Math.floor((Date.now() - startTime) / 1000);
-                if (newElapsed >= 5400) { // 90 minút
+                if (newElapsed >= TOTAL_TIME_SECONDS) {
                     setIsActive(false);
-                    setElapsedTime(5400);
+                    setElapsedTime(TOTAL_TIME_SECONDS);
                 } else {
                     setElapsedTime(newElapsed);
                 }
@@ -71,7 +73,7 @@ export default function TripTracker({ t }) {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const progress = Math.min(100, (elapsedTime / 5400) * 100);
+    const progress = Math.min(100, (elapsedTime / TOTAL_TIME_SECONDS) * 100);
 
     return (
         <div className="bg-goral-800/80 backdrop-blur-md rounded-xl p-4 mb-6">
@@ -99,15 +101,19 @@ export default function TripTracker({ t }) {
                     <div className="mb-2">
                         <div className="flex justify-between text-goral-300 text-xs mb-1">
                             <span>{t?.time_elapsed || "Uplynulý čas"}</span>
-                            <span>{formatTime(elapsedTime)} / 90:00</span>
+                            <span>{formatTime(elapsedTime)} / 100:00</span>
                         </div>
                         <div className="h-2 bg-goral-700 rounded-full overflow-hidden">
                             <div className="h-full bg-river-400 rounded-full" style={{ width: `${progress}%` }} />
                         </div>
                     </div>
 
-                    {/* MAPA */}
-                    <MapView elapsedTime={elapsedTime} isActive={isActive} />
+                    {/* MAPA s callbackom */}
+                    <MapView
+                        elapsedTime={elapsedTime}
+                        isActive={isActive}
+                        onMarkerClick={onMarkerClick}
+                    />
 
                     <div className="mt-3 text-center text-goral-300 text-xs">
                         {t?.map_hint || "Loď sa pohybuje po mape podľa času plavby"}

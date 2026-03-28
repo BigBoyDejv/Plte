@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import translations from '../lib/translations';
 import HeroSection from '../components/HeroSection';
 import StopCard from '../components/StopCard';
@@ -32,8 +32,6 @@ const stopImages = [
   "https://cdn-5c6ca782f911ca1b2cef5e4c.closte.com/wp-content/uploads/2022/07/SplywDunajcem-9-600x400.jpg",
   "https://upload.wikimedia.org/wikipedia/commons/0/0c/Sama_Jedna_a1.jpg",
   "https://www.cestovnicek.sk/wp-content/uploads/lesnica-pristav-plte-splavovanie-dunajca-1-scaled.jpg",
-
-
 ];
 
 export default function Home() {
@@ -41,6 +39,8 @@ export default function Home() {
   const t = translations[lang];
   const isRtl = t.rtl || false;
   const dir = isRtl ? 'rtl' : 'ltr';
+  const [highlightedStop, setHighlightedStop] = useState(null);
+  const stopRefs = useRef([]);
 
   const stops = [
     { title: t.stop1_title, desc: t.stop1_desc },
@@ -66,6 +66,25 @@ export default function Home() {
     { title: t.stop21_title, desc: t.stop21_desc },
   ];
 
+  const scrollToStop = (stopId, stopName) => {
+    console.log('🔍 scrollToStop volaný!', { stopId, stopName });
+    const index = stopId - 1;
+    console.log('Index:', index);
+    console.log('Element:', stopRefs.current[index]);
+
+    if (stopRefs.current[index]) {
+      setHighlightedStop(stopId);
+      setTimeout(() => setHighlightedStop(null), 2000);
+
+      stopRefs.current[index].scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    } else {
+      console.log('❌ Element neexistuje pre index:', index);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-goral-50 font-body" dir={dir}>
       <header className="sticky top-0 z-30 bg-goral-900/95 backdrop-blur-xl border-b-2 border-goral-600/50">
@@ -78,13 +97,15 @@ export default function Home() {
             </svg>
             <span className="text-goral-100 font-water text-xl hidden sm:block">Dunajec</span>
           </div>
-          <InstallButton t={t} />
-          <LangSelectorInHeader currentLang={lang} onChangeLang={setLang} />
+          <div className="flex items-center gap-3">
+            <InstallButton t={t} />
+            <LangSelectorInHeader currentLang={lang} onChangeLang={setLang} />
+          </div>
         </div>
       </header>
 
       <HeroSection t={t} />
-      <TripTracker t={t} />
+      <TripTracker t={t} onMarkerClick={scrollToStop} />
 
       <div className="h-8 bg-goral-800 folk-pattern" />
 
@@ -104,8 +125,16 @@ export default function Home() {
           <div className="space-y-10 sm:space-y-16">
             {stops.map((stop, idx) => {
               const isLeft = idx % 2 === 0;
+              const isHighlighted = highlightedStop === idx + 1;
               return (
-                <div key={idx} className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start relative">
+                <div
+                  key={idx}
+                  ref={el => stopRefs.current[idx] = el}
+                  className={`lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start relative transition-all duration-500 ${isHighlighted ? 'scroll-mt-24' : ''}`}
+                  style={isHighlighted ? {
+                    animation: 'highlightPulse 0.5s ease-in-out'
+                  } : {}}
+                >
                   <div className="absolute left-1/2 -translate-x-1/2 z-10 hidden lg:flex items-center justify-center top-8">
                     <div className="w-6 h-6 bg-goral-500 rounded-full border-4 border-goral-50 shadow-lg" />
                     <div className="absolute w-10 h-10 bg-goral-400/30 rounded-full animate-ripple" />
@@ -113,7 +142,9 @@ export default function Home() {
                   {isLeft ? (
                     <>
                       <div className="lg:pr-12">
-                        <StopCard index={idx} title={stop.title} description={stop.desc} image={stopImages[idx]} lang={lang} t={t} dir={dir} />
+                        <div className={`transition-all duration-500 ${isHighlighted ? 'ring-4 ring-river-400 shadow-xl scale-[1.02] rounded-2xl' : ''}`}>
+                          <StopCard index={idx} title={stop.title} description={stop.desc} image={stopImages[idx]} lang={lang} t={t} dir={dir} />
+                        </div>
                       </div>
                       <div className="hidden lg:block" />
                     </>
@@ -121,7 +152,9 @@ export default function Home() {
                     <>
                       <div className="hidden lg:block" />
                       <div className="lg:pl-12">
-                        <StopCard index={idx} title={stop.title} description={stop.desc} image={stopImages[idx]} lang={lang} t={t} dir={dir} />
+                        <div className={`transition-all duration-500 ${isHighlighted ? 'ring-4 ring-river-400 shadow-xl scale-[1.02] rounded-2xl' : ''}`}>
+                          <StopCard index={idx} title={stop.title} description={stop.desc} image={stopImages[idx]} lang={lang} t={t} dir={dir} />
+                        </div>
                       </div>
                     </>
                   )}

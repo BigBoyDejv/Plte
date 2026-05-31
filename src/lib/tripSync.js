@@ -1,32 +1,25 @@
 /** Synchronizácia živej plavby – Google Apps Script (JSONP kvôli CORS) */
 
 const TRIP_CACHE_KEY = 'dunajec-live-trip-state';
-const SYNC_URL_STORAGE_KEY = 'dunajec-trip-sync-url';
 export const POLL_MS = 3000;
 
 export const ADMIN_PIN = import.meta.env.VITE_ADMIN_PIN || '555555';
 
+const FIXED_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxM9IAoAh5EVc9z0FVNMmtFeDfnkTyP-q4KXA5OR5OfXciaatCwI_TODSeOIn9o45LS/exec';
+
 export function getTripSyncUrl() {
-  const fromEnv = import.meta.env.VITE_TRIP_SYNC_URL?.trim();
-  if (fromEnv) return fromEnv;
-  try {
-    return localStorage.getItem(SYNC_URL_STORAGE_KEY)?.trim() || '';
-  } catch {
-    return '';
-  }
+  return FIXED_SYNC_URL;
 }
 
-export function saveTripSyncUrl(url) {
-  const trimmed = url?.trim();
-  if (!trimmed || !trimmed.includes('script.google.com')) {
-    throw new Error('Zadajte platnú URL z Google Apps Script (Nasadiť → Webová aplikácia)');
-  }
-  localStorage.setItem(SYNC_URL_STORAGE_KEY, trimmed);
+// Tieto funkcie sú zachované kvôli kompatibilite, ale URL je teraz fixná
+export function saveTripSyncUrl(_url) {
+  // no-op: URL je napevno nastavená
 }
 
 export function isTripSyncConfigured() {
-  return Boolean(getTripSyncUrl());
+  return true;
 }
+
 
 export function loadCachedTripState() {
   try {

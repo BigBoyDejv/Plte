@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   fetchTripState,
   loadCachedTripState,
@@ -54,11 +54,12 @@ export function LiveTripProvider({ children }) {
     };
   }, [refresh]);
 
-  const tripActive = Boolean(tripState?.tripId);
+  const tripActive = Boolean(tripState?.tripId && (tripState?.active || tripState?.stoppedAt));
   const tripRunning = Boolean(tripState?.active && tripState?.startedAt);
-  const elapsedSeconds = tripActive
-    ? Math.min(TRIP_DURATION_SECONDS, getElapsedSecondsFromState(tripState))
-    : 0;
+  const elapsedSeconds = useMemo(
+    () => (tripActive ? Math.min(TRIP_DURATION_SECONDS, getElapsedSecondsFromState(tripState)) : 0),
+    [tripActive, tripState, tick]
+  );
 
   useEffect(() => {
     if (!tripRunning) return undefined;

@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       includeAssets: ['favicon.png', 'favicon.ico', 'apple-touch-icon.png', 'robots.txt'],
       manifest: {
         name: 'Splavovanie Dunajca',
@@ -72,11 +73,26 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,woff,ttf,eot,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2,woff,ttf,eot,json}'],
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+        cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         runtimeCaching: [
           {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'app-images-cache',
+              expiration: {
+                maxEntries: 350,
+                maxAgeSeconds: 60 * 60 * 24 * 90,
+              },
+            },
+          },
+          {
             // Cache pre Leaflet mapové dlaždice
-            urlPattern: /^https:\/\/{s}\.basemaps\.cartocdn\.com\/.*/,
+            urlPattern: /^https:\/\/[a-d]\.basemaps\.cartocdn\.com\/.*/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'map-tiles-cache',
@@ -110,37 +126,13 @@ export default defineConfig({
               }
             }
           },
-          {
-            // Cache pre obrázky (Wikimedia a iné)
-            urlPattern: /^https:\/\/upload\.wikimedia\.org\/.*|^https:\/\/ipravda\.sk\/.*|^https:\/\/i\.postimg\.cc\/.*/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'image-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 dní
-              }
-            }
-          },
-          {
-            // Cache pre API (Google Sheets)
-            urlPattern: /^https:\/\/script\.google\.com\/macros\/s\/.*/,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              networkTimeoutSeconds: 10,
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hodín
-              }
-            }
-          }
         ]
       },
       devOptions: {
-        enabled: true,
-        type: 'module'
-      }
+        // V dev vypnuté – Workbox inak blokuje fetch na Google Apps Script
+        enabled: false,
+        type: 'module',
+      },
     })
   ],
   base: './',

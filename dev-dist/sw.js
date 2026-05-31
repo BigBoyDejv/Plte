@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-1fbd7631'], (function (workbox) { 'use strict';
+define(['./workbox-a9dc06e2'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -82,13 +82,23 @@ define(['./workbox-1fbd7631'], (function (workbox) { 'use strict';
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
     "url": "index.html",
-    "revision": "0.5b2hr1b70ts"
+    "revision": "0.ms6arkm5rus"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/]
+    allowlist: [/^\/$/],
+    denylist: [/^\/api\//]
   }));
-  workbox.registerRoute(/^https:\/\/{s}\.basemaps\.cartocdn\.com\/.*/, new workbox.CacheFirst({
+  workbox.registerRoute(({
+    request
+  }) => request.destination === "image", new workbox.StaleWhileRevalidate({
+    "cacheName": "app-images-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 350,
+      maxAgeSeconds: 7776000
+    })]
+  }), 'GET');
+  workbox.registerRoute(/^https:\/\/[a-d]\.basemaps\.cartocdn\.com\/.*/, new workbox.CacheFirst({
     "cacheName": "map-tiles-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 200,
@@ -109,19 +119,12 @@ define(['./workbox-1fbd7631'], (function (workbox) { 'use strict';
       maxAgeSeconds: 2592000
     })]
   }), 'GET');
-  workbox.registerRoute(/^https:\/\/upload\.wikimedia\.org\/.*|^https:\/\/ipravda\.sk\/.*|^https:\/\/i\.postimg\.cc\/.*/, new workbox.StaleWhileRevalidate({
-    "cacheName": "image-cache",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 100,
-      maxAgeSeconds: 2592000
-    })]
-  }), 'GET');
   workbox.registerRoute(/^https:\/\/script\.google\.com\/macros\/s\/.*/, new workbox.NetworkFirst({
     "cacheName": "api-cache",
-    "networkTimeoutSeconds": 10,
+    "networkTimeoutSeconds": 8,
     plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 50,
-      maxAgeSeconds: 86400
+      maxEntries: 20,
+      maxAgeSeconds: 600
     })]
   }), 'GET');
 

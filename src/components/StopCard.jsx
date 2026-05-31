@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import FolkDivider from './FolkDivider';
 
-export default function StopCard({ index, title, description, image, lang, t, dir }) {
+export default function StopCard({ index, title, description, image, lang, t, dir, onShowOnMap }) {
   const [audioState, setAudioState] = useState('idle');
   const [currentAudio, setCurrentAudio] = useState(null);
 

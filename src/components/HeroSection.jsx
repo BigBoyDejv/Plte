@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import FolkDivider from './FolkDivider';
 
-export default function HeroSection({ t }) {
+export default function HeroSection({ t })  {
   return (
     <section className="relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Background */}

@@ -7,6 +7,8 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 // Add page imports here
 import Home from './pages/Home';
+import Admin from './pages/Admin';
+import { LiveTripProvider } from '@/contexts/LiveTripContext';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,10 +35,13 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <LiveTripProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </LiveTripProvider>
   );
 };
 

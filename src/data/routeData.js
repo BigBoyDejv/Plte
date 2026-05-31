@@ -1,9 +1,9 @@
 export const routePoints = [
     // === ŠTART (viditeľný) ===
-    { id: 1000, lat: 49.3895811, lng: 20.3837800, name: "Štart", time: 0, showOnMap: true },
+    { id: 1000, lat: 49.3895811, lng: 20.3837800, name: "Úvod", time: 0, showOnMap: true },
 
     // Medziľahlé body (skryté)
-    { id: 1, lat: 49.3888156, lng: 20.3870953, name: "Úvod", time: 1.2, showOnMap: true },
+    { id: 1, lat: 49.3888156, lng: 20.3870953, name: "", time: 1.2, showOnMap: false },
     { id: 3000, lat: 49.3889636, lng: 20.3907336, name: "", time: 2.4, showOnMap: false },
     { id: 2, lat: 49.3897039, lng: 20.3937197, name: "Pre rybárov", time: 3.6, showOnMap: true },
     { id: 5000, lat: 49.3907144, lng: 20.3965181, name: "", time: 4.8, showOnMap: false },
@@ -76,35 +76,56 @@ export const routePoints = [
     { id: 21, lat: 49.4164650, lng: 20.4464564, name: "Cieľ", time: 83.0, showOnMap: true },
 ];
 
-// Funkcia na získanie iba viditeľných bodov
-export const visibleRoutePoints = routePoints.filter(point =>
-    point.name &&
-    point.name !== '' &&
-    !point.name.includes('Bod')
+export const visibleRoutePoints = routePoints.filter(
+  (point) => point.name && point.name !== '' && !point.name.includes('Bod')
 );
 
-export const totalTime = 100;
+/** Trvanie plavby v minútach (podľa trasy) */
+export const totalTimeMinutes = 100;
+export const TRIP_DURATION_SECONDS = totalTimeMinutes * 60;
 
-
-// Funkcia na výpočet pozície podľa času (v sekundách)
 export function getPositionAtTime(elapsedSeconds) {
-    const elapsedMinutes = elapsedSeconds / 60;
+  const elapsedMinutes = elapsedSeconds / 60;
 
-    if (elapsedMinutes <= 0) return routePoints[0];
-    if (elapsedMinutes >= totalTime) return routePoints[routePoints.length - 1];
+  if (elapsedMinutes <= 0) return routePoints[0];
+  if (elapsedMinutes >= totalTimeMinutes) return routePoints[routePoints.length - 1];
 
-    for (let i = 0; i < routePoints.length - 1; i++) {
-        const p1 = routePoints[i];
-        const p2 = routePoints[i + 1];
-        const time1 = p1.time;
-        const time2 = p2.time;
+  for (let i = 0; i < routePoints.length - 1; i++) {
+    const p1 = routePoints[i];
+    const p2 = routePoints[i + 1];
+    const time1 = p1.time;
+    const time2 = p2.time;
 
-        if (elapsedMinutes >= time1 && elapsedMinutes <= time2) {
-            const ratio = (elapsedMinutes - time1) / (time2 - time1);
-            const lat = p1.lat + (p2.lat - p1.lat) * ratio;
-            const lng = p1.lng + (p2.lng - p1.lng) * ratio;
-            return { lat, lng, name: p1.name, id: p1.id };
-        }
+    if (elapsedMinutes >= time1 && elapsedMinutes <= time2) {
+      const ratio = (elapsedMinutes - time1) / (time2 - time1);
+      const lat = p1.lat + (p2.lat - p1.lat) * ratio;
+      const lng = p1.lng + (p2.lng - p1.lng) * ratio;
+      return { lat, lng, name: p1.name || p2.name, id: p1.id };
     }
-    return routePoints[0];
+  }
+  return routePoints[0];
+}
+
+/** Najbližšie zastavenie na trase podľa času plavby */
+export function getLiveStopInfo(elapsedSeconds) {
+  const elapsedMinutes = elapsedSeconds / 60;
+  let current = visibleRoutePoints[0];
+  let next = visibleRoutePoints[1] || null;
+
+  for (let i = 0; i < visibleRoutePoints.length; i++) {
+    const p = visibleRoutePoints[i];
+    if (p.time <= elapsedMinutes) {
+      current = p;
+      next = visibleRoutePoints[i + 1] || null;
+    }
+  }
+
+  const stopIndex = visibleRoutePoints.findIndex((p) => p.id === current.id) + 1;
+  return { current, next, stopIndex, elapsedMinutes };
+}
+
+export function formatTripTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
 }

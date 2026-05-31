@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import translations from '../lib/translations';
 import HeroSection from '../components/HeroSection';
 import StopCard from '../components/StopCard';
@@ -9,38 +9,32 @@ import Reviews from '../components/Reviews';
 import Footer from '../components/Footer';
 import Chatbot from '../components/Chatbot';
 import InstallButton from '../components/InstallButton';
-
-const stopImages = [
-  "https://www.plte-dunajec.sk/images/plte_dunajec.jpg",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9yfB2LjruSx-CLZ8nGPgH32zzLrQwCzfLmrMNcUDZEO56NzfCbw4x8VJTZ--P9DxJlIM6Ae8p1VmYgIoYrDZGRiW96IFknaDUl7MMKH8&s=10",
-  "https://goralskydvor.sk/wp-content/uploads/2018/03/22950804.jpg",
-  "https://www.trzykorony.pl/files/page_content/big/153086332715b3f1edf27677966172628.webp",
-  "https://i.postimg.cc/jSzkNcYw/Snimka-obrazovky-2026-03-26-025805.png",
-  "https://cdn.seeandgo.sk/images/photoarchive/sized/700/2016/06/07/lavka01.jpg",
-  "https://malevelkecesty.sk/wp-content/uploads/2020/09/IMG-6296-970x658.jpg",
-  "https://lh3.googleusercontent.com/gps-cs-s/AHVAwerlmH3nTkD8BU5AqMv46wvRwHJ2lGOQGGp9l-HUSgXvb1zPzko1iKq4esS6l3eKPJl5kdSgvJOcdOT3iIJz9xl0I7rDsyTer7JQTNLDDNnHn1DQQViF36JhoxxIsZ7sLZIWC7escw=w810-h468-n-k-no",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Pieniny_Ostra_Skala_1.jpg/4000px-Pieniny_Ostra_Skala_1.jpg",
-  "https://greenfilmtourism.eu/upload/inspiracje/SKPINS/SK_P_INS01.jpg",
-  "https://antiquavilla.sk/wp-content/uploads/2024/06/WhatsApp-Image-2021-07-01-at-11.06.12-1.jpeg",
-  "https://i.ytimg.com/vi/ZlvWur_7JrQ/hqdefault.jpg",
-  "https://files.slovakia.travel/_processed_/csm_Prielom%2520Dunajca%2520Icon%2520003_0c45a0baf2.jpg",
-  "https://vylety.online/wp-content/uploads/2020/11/20120527_1205_0580-768x512.jpg",
-  "https://img.projektn.sk/wp-static/2025/07/IMG8616.jpg?w=640&fm=jpg&q=85",
-  "https://images-sp.summitpost.org/tr:e-sharpen,e-contrast-1,fit-max,q-60,w-500/823163.jpg",
-  "https://www.tatrysimi.sk/wp-content/uploads/2020/05/Dravy-dunajec.jpg",
-  "https://img.freepik.com/premium-photo/dunajec-river-gorge-pieniny-national-park-spring-poland_643825-1561.jpg",
-  "https://cdn-5c6ca782f911ca1b2cef5e4c.closte.com/wp-content/uploads/2022/07/SplywDunajcem-9-600x400.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/0/0c/Sama_Jedna_a1.jpg",
-  "https://www.cestovnicek.sk/wp-content/uploads/lesnica-pristav-plte-splavovanie-dunajca-1-scaled.jpg",
-];
+import OfflineStatus from '../components/OfflineStatus';
+import { stopImages } from '../data/offlineAssets';
+import { useLiveTrip } from '../contexts/LiveTripContext';
+import { visibleRoutePoints } from '../data/routeData';
 
 export default function Home() {
+  const { tripActive } = useLiveTrip();
   const [lang, setLang] = useState('sk');
   const t = translations[lang];
   const isRtl = t.rtl || false;
   const dir = isRtl ? 'rtl' : 'ltr';
   const [highlightedStop, setHighlightedStop] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const stopRefs = useRef([]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const trackerEl = document.getElementById('trip-tracker-section');
+      if (trackerEl) {
+        const rect = trackerEl.getBoundingClientRect();
+        setShowScrollTop(rect.bottom < 0);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const stops = [
     { title: t.stop1_title, desc: t.stop1_desc },
@@ -66,24 +60,26 @@ export default function Home() {
     { title: t.stop21_title, desc: t.stop21_desc },
   ];
 
-  const scrollToStop = (stopId, stopName) => {
-    console.log('🔍 scrollToStop volaný!', { stopId, stopName });
-    const index = stopId - 1;
-    console.log('Index:', index);
-    console.log('Element:', stopRefs.current[index]);
-
+  const scrollToStopIndex = useCallback((stopIndex) => {
+    const index = stopIndex - 1;
     if (stopRefs.current[index]) {
-      setHighlightedStop(stopId);
-      setTimeout(() => setHighlightedStop(null), 2000);
-
-      stopRefs.current[index].scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    } else {
-      console.log('❌ Element neexistuje pre index:', index);
+      setHighlightedStop(stopIndex);
+      setTimeout(() => setHighlightedStop(null), 2500);
+      stopRefs.current[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }, []);
+
+  const scrollToStop = useCallback((pointId, stopName) => {
+    const fromMap = visibleRoutePoints.find((p) => p.id === pointId);
+    if (fromMap) {
+      const idx = visibleRoutePoints.indexOf(fromMap) + 1;
+      scrollToStopIndex(idx);
+      return;
+    }
+    if (typeof pointId === 'number' && pointId >= 1 && pointId <= 21) {
+      scrollToStopIndex(pointId);
+    }
+  }, [scrollToStopIndex]);
 
   return (
     <div className="min-h-screen bg-goral-50 font-body" dir={dir}>
@@ -96,6 +92,12 @@ export default function Home() {
               <path d="M2 7c1.5-2 3.5-3 5.5-3s4 1 5.5 3c1.5-2 3.5-3 5.5-3s4 1 5.5 3" strokeLinecap="round" opacity="0.5" />
             </svg>
             <span className="text-goral-100 font-water text-xl hidden sm:block">Dunajec</span>
+            {tripActive && (
+              <span className="sm:hidden inline-flex items-center gap-1 bg-river-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                LIVE
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <InstallButton t={t} />
@@ -105,7 +107,13 @@ export default function Home() {
       </header>
 
       <HeroSection t={t} />
-      <TripTracker t={t} onMarkerClick={scrollToStop} />
+      <div id="trip-tracker-section">
+        <TripTracker
+          t={t}
+          onMarkerClick={scrollToStop}
+          onLiveStopChange={scrollToStopIndex}
+        />
+      </div>
 
       <div className="h-8 bg-goral-800 folk-pattern" />
 
@@ -130,7 +138,7 @@ export default function Home() {
                 <div
                   key={idx}
                   ref={el => stopRefs.current[idx] = el}
-                  className={`lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start relative transition-all duration-500 ${isHighlighted ? 'scroll-mt-24' : ''}`}
+                  className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start relative transition-all duration-500 scroll-mt-36 sm:scroll-mt-48"
                   style={isHighlighted ? {
                     animation: 'highlightPulse 0.5s ease-in-out'
                   } : {}}
@@ -169,6 +177,22 @@ export default function Home() {
       <Reviews t={t} />
       <Chatbot t={t} lang={lang} />
       <Footer />
+      <OfflineStatus t={t} />
+
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() => document.getElementById('trip-tracker-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+          className="fixed bottom-6 left-6 z-40 flex items-center gap-2 bg-goral-900/90 backdrop-blur-md text-white px-4 py-3 rounded-full border border-goral-600/50 shadow-2xl hover:bg-goral-800 transition-all duration-300 animate-in fade-in zoom-in hover:scale-105"
+        >
+          <svg className="w-5 h-5 text-river-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+          </svg>
+          <span className="text-xs font-bold tracking-wide uppercase font-body">
+            {lang === 'pl' ? 'Wróć do mapy' : lang === 'en' ? 'Back to map' : 'Späť na mapu'}
+          </span>
+        </button>
+      )}
     </div>
   );
 }

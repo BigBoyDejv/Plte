@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FolkDivider from './FolkDivider';
+import {
+    loadCachedReviews,
+    saveCachedReviews,
+    queuePendingReview,
+    flushPendingReviews,
+} from '@/lib/reviewsCache';
 
 // Google Apps Script URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfFez20wBmt55stBeeGwDnxfv7qvTyhv_NRmAOk3SxcdFkBF5jM1GQeEqOZu_dmCX3OQ/exec';
@@ -12,6 +18,7 @@ export default function Reviews({ t }) {
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [offlineQueued, setOfflineQueued] = useState(false);
 
     // ==================== FUNKCIE NA FORMÁTOVANIE DÁTUMU ====================
 
@@ -45,23 +52,62 @@ export default function Reviews({ t }) {
         return `${day}.${month}.${year}`;
     };
 
-    // Načítanie recenzií z Google Sheets
-    useEffect(() => {
+    const loadReviews = () => {
         fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
                 setReviews(data);
+                saveCachedReviews(data);
+                setError(false);
                 setLoading(false);
             })
             .catch(err => {
                 console.error('Chyba pri načítaní recenzií:', err);
-                setError(true);
+                const cached = loadCachedReviews();
+                if (cached?.length) {
+                    setReviews(cached);
+                    setError(false);
+                } else {
+                    setError(true);
+                }
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        loadReviews();
+    }, []);
+
+    useEffect(() => {
+        const syncPending = () => {
+            flushPendingReviews(SCRIPT_URL).then((ok) => {
+                if (ok) loadReviews();
+            });
+        };
+        window.addEventListener('online', syncPending);
+        syncPending();
+        return () => window.removeEventListener('online', syncPending);
     }, []);
 
     const handleAddReview = async () => {
         if (!newReview.text.trim()) return;
+
+        if (!navigator.onLine) {
+            queuePendingReview({
+                name: newReview.name.trim() || null,
+                rating: newReview.rating,
+                text: newReview.text.trim(),
+            });
+            setNewReview({ name: '', rating: 5, text: '' });
+            setShowForm(false);
+            setOfflineQueued(true);
+            setSubmitted(true);
+            setTimeout(() => {
+                setSubmitted(false);
+                setOfflineQueued(false);
+            }, 4000);
+            return;
+        }
 
         try {
             await fetch(SCRIPT_URL, {
@@ -118,6 +164,7 @@ export default function Reviews({ t }) {
         cancel: t?.reviews_cancel || "Zrušiť",
         submit: t?.reviews_submit || "Odoslať",
         thanks: t?.reviews_thanks || "Ďakujeme za vašu recenziu!",
+        thanksOffline: t?.reviews_offline_saved || "Recenzia sa odošle po obnovení signálu.",
         ratingLabel: t?.reviews_rating || "Hodnotenie",
         nameLabel: t?.reviews_name || "Meno (voliteľné)",
         namePlaceholder: t?.reviews_name_placeholder || "Zadajte svoje meno",
@@ -244,7 +291,7 @@ export default function Reviews({ t }) {
                             exit={{ opacity: 0 }}
                             className="fixed bottom-4 right-4 bg-forest-600 text-white px-6 py-3 rounded-xl shadow-lg z-50"
                         >
-                            {texts.thanks}
+                            {offlineQueued ? texts.thanksOffline : texts.thanks}
                         </motion.div>
                     )}
                 </AnimatePresence>

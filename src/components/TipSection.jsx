@@ -46,8 +46,8 @@ export default function TipSection({ t, isRtl, lang }) {
   const currentAmounts = tipAmounts[lang] || tipAmounts.sk;
   const currencySymbol = currencySymbols[lang] || '€';
 
-  // Váš IBAN (upravte podľa seba)
-  const IBAN = 'SK68 1234 5678 9012 3456 7890';
+  // Váš IBAN
+  const IBAN = 'SK46 1100 0000 0029 3773 5080';
   const accountName = 'Dávid Rušin';
 
   // Prevod sumy na EUR pre IBAN
@@ -80,13 +80,13 @@ export default function TipSection({ t, isRtl, lang }) {
 
   const generatePaymentString = () => {
     const amountInEUR = getAmountInEUR(parseFloat(amount));
-    return `iban:${IBAN.replace(/\s/g, '')}?amount=${amountInEUR}&name=${encodeURIComponent(accountName)}&msg=${encodeURIComponent(message || 'Tip')}`;
+    return `iban:${IBAN.replace(/\s/g, '')}?amount=${amountInEUR}&name=${encodeURIComponent(accountName)}&msg=${encodeURIComponent(message || 'Sprepitné')}`;
   };
 
   const texts = {
-    title: t?.tip_title || "Zanechajte tip pre pltníka",
-    desc: t?.tip_desc || "Páčila sa Vám plavba? Podporte nášho pltníka!",
-    button: t?.tip_button || "Zanechať tip",
+    title: t?.tip_title || "Sprepitné pre pltníka",
+    desc: t?.tip_desc || "Páčila sa Vám plavba? Podporte nášho pltníka sprepitným!",
+    button: t?.tip_button || "Zanechať sprepitné",
     placeholder: t?.tip_placeholder || "Suma",
     messagePlaceholder: t?.tip_message || "Správa pre pltníka (voliteľné)",
     cancel: t?.tip_cancel || "Zrušiť",

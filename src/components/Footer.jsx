@@ -29,7 +29,7 @@ export default function Footer() {
                 <p className="text-goral-400 text-sm font-body mb-2">
                     Made by{' '}
                     <a
-                        href="https://www.facebook.com/profile.php?id=100081833257873"
+                        href="https://www.linkedin.com/in/dávid-rušin-0649203b4/?skipRedirect=true"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-goral-300 hover:text-goral-100 transition-colors duration-300 underline underline-offset-2"

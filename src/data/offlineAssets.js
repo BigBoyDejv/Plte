@@ -8,19 +8,19 @@ export const stopImages = [
   'https://i.postimg.cc/jSzkNcYw/Snimka-obrazovky-2026-03-26-025805.png',
   'https://cdn.seeandgo.sk/images/photoarchive/sized/700/2016/06/07/lavka01.jpg',
   'https://malevelkecesty.sk/wp-content/uploads/2020/09/IMG-6296-970x658.jpg',
-  'https://lh3.googleusercontent.com/gps-cs-s/AHVAwerlmH3nTkD8BU5AqMv46wvRwHJ2lGOQGGp9l-HUSgXvb1zPzko1iKq4esS6l3eKPJl5kdSgvJOcdOT3iIJz9xl0I7rDsyTer7JQTNLDDNnHn1DQQViF36JhoxxIsZ7sLZIWC7escw=w810-h468-n-k-no',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Pieniny_Ostra_Skala_1.jpg/4000px-Pieniny_Ostra_Skala_1.jpg',
+  'https://cf.bstatic.com/xdata/images/hotel/max1024x768/334009993.jpg?k=2275538d837da0a113d26d306757e98f1ccc88ebd38a17da8190aaf0691851be&o=',
+  'https://upload.wikimedia.org/wikipedia/commons/4/46/Przełom_Dunajca_%28Ostra_Skała%29.jpg',
   'https://greenfilmtourism.eu/upload/inspiracje/SKPINS/SK_P_INS01.jpg',
   'https://antiquavilla.sk/wp-content/uploads/2024/06/WhatsApp-Image-2021-07-01-at-11.06.12-1.jpeg',
   'https://i.ytimg.com/vi/ZlvWur_7JrQ/hqdefault.jpg',
   'https://files.slovakia.travel/_processed_/csm_Prielom%2520Dunajca%2520Icon%2520003_0c45a0baf2.jpg',
-  'https://vylety.online/wp-content/uploads/2020/11/20120527_1205_0580-768x512.jpg',
+  'https://images-sp.summitpost.org/tr:e-sharpen,e-contrast-1,fit-max,q-60,w-1024/344674.JPG',
   'https://img.projektn.sk/wp-static/2025/07/IMG8616.jpg?w=640&fm=jpg&q=85',
-  'https://images-sp.summitpost.org/tr:e-sharpen,e-contrast-1,fit-max,q-60,w-500/823163.jpg',
+  'https://img-hiking.dennikn.sk/photos/_older/c0531ffd60990becac8f6760df916418.jpg',
   'https://www.tatrysimi.sk/wp-content/uploads/2020/05/Dravy-dunajec.jpg',
-  'https://img.freepik.com/premium-photo/dunajec-river-gorge-pieniny-national-park-spring-poland_643825-1561.jpg',
+  'https://www.bicycle-tours.cz/data/tours_galerie/9041a70f15586267a20c0ba067b238e8.jpg',
+  'https://domalenka.sk/uploads/images/atrakcie/turisticke/prielom-dunajca3.jpg',
   'https://cdn-5c6ca782f911ca1b2cef5e4c.closte.com/wp-content/uploads/2022/07/SplywDunajcem-9-600x400.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/0/0c/Sama_Jedna_a1.jpg',
   'https://www.cestovnicek.sk/wp-content/uploads/lesnica-pristav-plte-splavovanie-dunajca-1-scaled.jpg',
 ];
 
@@ -72,7 +72,9 @@ function mapTileUrls() {
   return urls;
 }
 
-const PREFETCH_DONE_KEY = 'dunajec-offline-prefetch-v1';
+// Kľúč sa automaticky zmení keď sa zmení zoznam obrázkov – nie je potrebné meniť ručne
+const _urlChecksum = OFFLINE_IMAGE_URLS.length + '-' + OFFLINE_IMAGE_URLS.reduce((acc, url) => acc + url.length, 0);
+const PREFETCH_DONE_KEY = `dunajec-offline-prefetch-${_urlChecksum}`;
 
 async function fetchIntoCache(url) {
   try {
@@ -82,8 +84,11 @@ async function fetchIntoCache(url) {
   }
 }
 
-/** Postupne stiahne obrázky a mapové dlaždice do cache service workera. */
-export async function prefetchOfflineAssets({ onProgress } = {}) {
+/**
+ * Postupne stiahne obrázky a mapové dlaždice do cache service workera.
+ * @param {{ onProgress?: (done: number, total: number) => void }} [options]
+ */
+export async function prefetchOfflineAssets({ onProgress = undefined } = {}) {
   if (!navigator.onLine) return false;
 
   const mapTiles = mapTileUrls();

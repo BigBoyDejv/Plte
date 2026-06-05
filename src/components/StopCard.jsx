@@ -105,7 +105,7 @@ export default function StopCard({ index, title, description, image, lang, t, di
           <div className="absolute inset-0 bg-gradient-to-t from-goral-900/60 via-transparent to-transparent" />
           <div className="absolute bottom-4 left-4 right-4">
             <span className="inline-block bg-goral-700/90 backdrop-blur-sm text-goral-100 text-xs font-bold font-body px-3 py-1.5 rounded-lg border border-goral-500/30">
-              Zastavenie {index + 1}
+              {t?.stop_label || 'Zastavenie'} {index + 1}
             </span>
           </div>
         </div>

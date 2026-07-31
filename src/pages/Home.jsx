@@ -10,6 +10,10 @@ import Footer from '../components/Footer';
 import Chatbot from '../components/Chatbot';
 import InstallButton from '../components/InstallButton';
 import OfflineStatus from '../components/OfflineStatus';
+import WeatherBadge from '../components/WeatherBadge';
+import AnimatedRiverWave from '../components/AnimatedRiverWave';
+import MobileFloatingBar from '../components/MobileFloatingBar';
+import DarkModeToggle from '../components/DarkModeToggle';
 import { stopImages } from '../data/offlineAssets';
 import { useLiveTrip } from '../contexts/LiveTripContext';
 import { visibleRoutePoints } from '../data/routeData';
@@ -36,29 +40,13 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const stops = [
-    { title: t.stop1_title, desc: t.stop1_desc },
-    { title: t.stop2_title, desc: t.stop2_desc },
-    { title: t.stop3_title, desc: t.stop3_desc },
-    { title: t.stop4_title, desc: t.stop4_desc },
-    { title: t.stop5_title, desc: t.stop5_desc },
-    { title: t.stop6_title, desc: t.stop6_desc },
-    { title: t.stop7_title, desc: t.stop7_desc },
-    { title: t.stop8_title, desc: t.stop8_desc },
-    { title: t.stop9_title, desc: t.stop9_desc },
-    { title: t.stop10_title, desc: t.stop10_desc },
-    { title: t.stop11_title, desc: t.stop11_desc },
-    { title: t.stop12_title, desc: t.stop12_desc },
-    { title: t.stop13_title, desc: t.stop13_desc },
-    { title: t.stop14_title, desc: t.stop14_desc },
-    { title: t.stop15_title, desc: t.stop15_desc },
-    { title: t.stop16_title, desc: t.stop16_desc },
-    { title: t.stop17_title, desc: t.stop17_desc },
-    { title: t.stop18_title, desc: t.stop18_desc },
-    { title: t.stop19_title, desc: t.stop19_desc },
-    { title: t.stop20_title, desc: t.stop20_desc },
-    { title: t.stop21_title, desc: t.stop21_desc },
-  ];
+  const stops = Array.from({ length: 21 }, (_, i) => {
+    const num = i + 1;
+    return {
+      title: t?.[`stop${num}_title`] || translations.sk[`stop${num}_title`] || `Zastavenie ${num}`,
+      desc: t?.[`stop${num}_desc`] || translations.sk[`stop${num}_desc`] || '',
+    };
+  });
 
   const scrollToStopIndex = useCallback((stopIndex) => {
     const index = stopIndex - 1;
@@ -82,11 +70,11 @@ export default function Home() {
   }, [scrollToStopIndex]);
 
   return (
-    <div className="min-h-screen bg-goral-50 font-body" dir={dir}>
+    <div className="min-h-screen bg-goral-50 dark:bg-[#160f0a] text-goral-900 dark:text-goral-100 transition-colors duration-300 font-body pb-16 md:pb-0" dir={dir}>
       <header className="sticky top-0 z-30 bg-goral-900/95 backdrop-blur-xl border-b-2 border-goral-600/50">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <svg className="w-7 h-7 text-river-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-7 h-7 text-river-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M2 12c1.5-2 3.5-3 5.5-3s4 1 5.5 3c1.5-2 3.5-3 5.5-3s4 1 5.5 3" strokeLinecap="round" />
               <path d="M2 17c1.5-2 3.5-3 5.5-3s4 1 5.5 3c1.5-2 3.5-3 5.5-3s4 1 5.5 3" strokeLinecap="round" opacity="0.5" />
               <path d="M2 7c1.5-2 3.5-3 5.5-3s4 1 5.5 3c1.5-2 3.5-3 5.5-3s4 1 5.5 3" strokeLinecap="round" opacity="0.5" />
@@ -99,7 +87,11 @@ export default function Home() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden sm:block">
+              <WeatherBadge />
+            </div>
+            <DarkModeToggle />
             <InstallButton t={t} />
             <LangSelectorInHeader currentLang={lang} onChangeLang={setLang} />
           </div>
@@ -107,6 +99,7 @@ export default function Home() {
       </header>
 
       <HeroSection t={t} />
+      <AnimatedRiverWave />
       <div id="trip-tracker-section">
         <TripTracker
           t={t}
@@ -117,9 +110,9 @@ export default function Home() {
 
       <div className="h-8 bg-goral-800 folk-pattern" />
 
-      <section className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
+      <section id="stops-section" className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-folk font-bold text-goral-900 tracking-wide mb-4">
+          <h2 className="text-4xl sm:text-5xl font-folk font-bold text-goral-900 dark:text-goral-100 tracking-wide mb-4">
             {t.stops_title}
           </h2>
           <FolkDivider className="justify-center" />
@@ -183,7 +176,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => document.getElementById('trip-tracker-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-          className="fixed bottom-6 left-6 z-40 flex items-center gap-2 bg-goral-900/90 backdrop-blur-md text-white px-4 py-3 rounded-full border border-goral-600/50 shadow-2xl hover:bg-goral-800 transition-all duration-300 animate-in fade-in zoom-in hover:scale-105"
+          className="fixed bottom-20 left-4 z-40 md:bottom-6 md:left-6 flex items-center gap-2 bg-goral-900/90 backdrop-blur-md text-white px-4 py-3 rounded-full border border-goral-600/50 shadow-2xl hover:bg-goral-800 transition-all duration-300 animate-in fade-in zoom-in hover:scale-105"
         >
           <svg className="w-5 h-5 text-river-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -193,6 +186,8 @@ export default function Home() {
           </span>
         </button>
       )}
+
+      <MobileFloatingBar t={t} />
     </div>
   );
 }

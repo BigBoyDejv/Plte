@@ -17,7 +17,7 @@ export const stopImages = [
   'https://images-sp.summitpost.org/tr:e-sharpen,e-contrast-1,fit-max,q-60,w-1024/344674.JPG',
   'https://img.projektn.sk/wp-static/2025/07/IMG8616.jpg?w=640&fm=jpg&q=85',
   'https://img-hiking.dennikn.sk/photos/_older/c0531ffd60990becac8f6760df916418.jpg',
-  'https://www.tatrysimi.sk/wp-content/uploads/2020/05/Dravy-dunajec.jpg',
+  'https://kamnavyletsk.b-cdn.net/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsiZGF0YSI6NDUwNSwicHVyIjoiYmxvYl9pZCJ9fQ==--89b4686a1147724238727d1d838b0591cf36a293/eyJfcmFpbHMiOnsiZGF0YSI6eyJmb3JtYXQiOiJqcGVnIiwicmVzaXplX3RvX2ZpbGwiOls4MzIsNTAwLHsiY3JvcCI6ImF0dGVudGlvbiJ9XSwiY29udmVydCI6ImpwZWciLCJzYXZlciI6eyJxdWFsaXR5Ijo1MCwic3RyaXAiOnRydWV9fSwicHVyIjoidmFyaWF0aW9uIn19--2d91b21b4c7abfc8e74e7b1cdefeaf768fda05cb/photo.jpeg',
   'https://www.bicycle-tours.cz/data/tours_galerie/9041a70f15586267a20c0ba067b238e8.jpg',
   'https://domalenka.sk/uploads/images/atrakcie/turisticke/prielom-dunajca3.jpg',
   'https://cdn-5c6ca782f911ca1b2cef5e4c.closte.com/wp-content/uploads/2022/07/SplywDunajcem-9-600x400.jpg',

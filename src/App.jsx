@@ -10,6 +10,8 @@ import Home from './pages/Home';
 import Admin from './pages/Admin';
 import { LiveTripProvider } from '@/contexts/LiveTripContext';
 
+import { ThemeProvider } from '@/contexts/ThemeContext';
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -35,13 +37,15 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <LiveTripProvider>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </LiveTripProvider>
+    <ThemeProvider>
+      <LiveTripProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </LiveTripProvider>
+    </ThemeProvider>
   );
 };
 

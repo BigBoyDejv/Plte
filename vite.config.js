@@ -21,6 +21,22 @@ export default defineConfig({
         start_url: '/',
         lang: 'sk',
         categories: ['travel', 'education', 'lifestyle'],
+        shortcuts: [
+          {
+            name: 'Ovládanie plavby',
+            short_name: 'Admin / Štart',
+            description: 'Spustiť alebo zastaviť plavbu (pre pltníka)',
+            url: '/admin',
+            icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Živá plavba',
+            short_name: 'Mapa plavby',
+            description: 'Zobraziť živé sledovanie plavby na rieke',
+            url: '/#trip-tracker-section',
+            icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }]
+          }
+        ],
         icons: [
           {
             src: '/icons/icon-72x72.png',

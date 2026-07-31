@@ -102,7 +102,7 @@ export default function TipSection({ t, isRtl, lang }) {
       <div className="h-8 bg-goral-800 folk-pattern" />
       <div className="bg-gradient-to-b from-goral-800 to-goral-900 py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="relative bg-goral-50 rounded-2xl overflow-hidden shadow-2xl border-2 border-goral-300">
+          <div className="relative bg-goral-50 dark:bg-goral-900 rounded-2xl overflow-hidden shadow-2xl border-2 border-goral-300 dark:border-goral-700 transition-colors">
             <div className="h-5 bg-gradient-to-r from-goral-700 via-goral-500 to-goral-700 relative overflow-hidden">
               <div className="absolute inset-0 folk-pattern opacity-40" />
             </div>
@@ -122,10 +122,10 @@ export default function TipSection({ t, isRtl, lang }) {
 
                 {/* Content */}
                 <div className={`text-center lg:${isRtl ? 'text-right' : 'text-left'} flex-1`}>
-                  <h3 className="text-3xl sm:text-4xl font-folk font-bold text-goral-900 tracking-wide mb-3">
+                  <h3 className="text-3xl sm:text-4xl font-folk font-bold text-goral-900 dark:text-goral-100 tracking-wide mb-3">
                     {texts.title}
                   </h3>
-                  <p className="text-goral-500 font-body text-sm sm:text-base mb-8">
+                  <p className="text-goral-500 dark:text-goral-300 font-body text-sm sm:text-base mb-8">
                     {texts.desc}  {/* ← TERAZ POUŽÍVA t.tip_desc */}
                   </p>
 

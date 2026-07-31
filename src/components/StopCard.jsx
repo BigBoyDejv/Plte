@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import FolkDivider from './FolkDivider';
 
-export default function StopCard({ index, title, description, image, lang, t, dir, onShowOnMap }) {
+export default function StopCard({ index, title, description, image, lang, t, dir, onShowOnMap = null }) {
   const [audioState, setAudioState] = useState('idle');
   const [currentAudio, setCurrentAudio] = useState(null);
 
@@ -88,7 +88,7 @@ export default function StopCard({ index, title, description, image, lang, t, di
       dir={dir}
       className="group overflow-hidden transition-all duration-700"
     >
-      <div className="bg-goral-50 border-2 border-goral-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500">
+      <div className="bg-goral-50 dark:bg-goral-900 border-2 border-goral-200 dark:border-goral-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
         {/* Top folk stripe */}
         <div className="h-3 bg-gradient-to-r from-goral-600 via-goral-400 to-goral-600 relative overflow-hidden">
           <div className="absolute inset-0 folk-pattern opacity-40" />
@@ -112,36 +112,38 @@ export default function StopCard({ index, title, description, image, lang, t, di
 
         {/* Content */}
         <div className="p-6 sm:p-8">
-          <h3 className="text-2xl sm:text-3xl font-folk font-bold text-goral-900 mb-4 tracking-wide">
+          <h3 className="text-2xl sm:text-3xl font-folk font-bold text-goral-900 dark:text-goral-50 mb-4 tracking-wide">
             {title}
           </h3>
           <FolkDivider className="mb-4" />
-          <p className="text-goral-700 font-body leading-relaxed mb-6 text-sm sm:text-base">
+          <p className="text-goral-700 dark:text-goral-300 font-body leading-relaxed mb-6 text-sm sm:text-base">
             {description}
           </p>
           <button
             onClick={handleAudio}
-            className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl font-body font-semibold text-sm transition-all duration-300 border-2
+            className={`w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 min-h-[56px] rounded-2xl font-body font-bold text-base sm:text-lg transition-all duration-300 border-2 shadow-xl tracking-wide uppercase active:scale-95
               ${isPlaying
-                ? 'bg-river-600 text-white border-river-700 shadow-lg'
-                : 'bg-goral-700 text-goral-50 border-goral-800 hover:bg-goral-800 shadow-lg shadow-goral-700/25'
+                ? 'bg-amber-400 text-goral-950 border-amber-200 shadow-amber-500/40 ring-4 ring-amber-400/40 animate-pulse'
+                : 'bg-river-600 text-white border-river-400 hover:bg-river-500 shadow-river-900/40'
               }`}
             disabled={isLoading}
           >
             {isLoading ? (
-              <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeWidth="2" strokeLinecap="round" />
+              <svg className="w-6 h-6 animate-spin shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeWidth="2.5" strokeLinecap="round" />
               </svg>
             ) : isPlaying ? (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" />
               </svg>
             ) : (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
             )}
-            {isLoading ? (t?.loading_audio || "Nahrávam...") : isPlaying ? (t?.stop_listening || "Zastaviť") : (t?.listen || "Vypočuť")}
+            <span>
+              {isLoading ? (t?.loading_audio || "Nahrávam...") : isPlaying ? (t?.stop_listening || "Zastaviť audio") : (t?.listen || "Vypočuť sprievodcu")}
+            </span>
           </button>
         </div>
 

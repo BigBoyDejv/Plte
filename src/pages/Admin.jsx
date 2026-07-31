@@ -10,6 +10,9 @@ import {
 } from '@/lib/tripSync';
 import { useLiveTrip } from '@/contexts/LiveTripContext';
 import { formatTripTime } from '@/data/routeData';
+import ShmuWeatherCard from '@/components/ShmuWeatherCard';
+import TripCounterCard from '@/components/TripCounterCard';
+import TipsTrackerCard from '@/components/TipsTrackerCard';
 
 export default function Admin() {
   const { tripState, tripActive, tripRunning, elapsedSeconds, refresh } = useLiveTrip();
@@ -54,6 +57,20 @@ export default function Admin() {
     setError('');
     try {
       const expected = ADMIN_PIN || import.meta.env.VITE_ADMIN_PIN;
+
+      if (action === 'start' && !tripActive) {
+        // Pri novom štarte plavby automaticky navýšiť počítadlo jazd
+        try {
+          const todayKey = `dunajec_trips_today_${new Date().toISOString().slice(0, 10)}`;
+          const todayVal = (Number(localStorage.getItem(todayKey)) || 0) + 1;
+          const totalVal = (Number(localStorage.getItem('dunajec_trips_total')) || 0) + 1;
+          localStorage.setItem(todayKey, String(todayVal));
+          localStorage.setItem('dunajec_trips_total', String(totalVal));
+        } catch {
+          /* ignore */
+        }
+      }
+
       await adminTripAction(action, expected || pin);
       await refresh();
       const labels = {
@@ -195,6 +212,15 @@ export default function Admin() {
         {error && (
           <p className="text-red-400 text-sm text-center">{error}</p>
         )}
+
+        {/* SHMÚ Hladina & Počasie */}
+        <ShmuWeatherCard />
+
+        {/* Počítadlo plavieb */}
+        <TripCounterCard />
+
+        {/* Evidencia tringeltov v EUR, PLN, USD, GBP */}
+        <TipsTrackerCard />
 
         <p className="text-goral-500 text-xs text-center leading-relaxed">
           Návštevníci nemusia inštalovať aplikáciu – stačí mať otvorenú stránku v prehliadači.

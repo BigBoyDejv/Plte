@@ -1379,7 +1379,7 @@ export default function Chatbot({ t, lang }) {
             {/* Tlačidlo na otvorenie chatu */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-4 right-4 z-50 bg-goral-700 hover:bg-goral-800 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110"
+                className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 bg-goral-700 hover:bg-goral-800 text-white rounded-full p-3.5 sm:p-4 shadow-2xl transition-all duration-300 hover:scale-110"
             >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -1393,7 +1393,7 @@ export default function Chatbot({ t, lang }) {
                         initial={{ opacity: 0, y: 50, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                        className="fixed bottom-20 right-4 z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-goral-200 overflow-hidden"
+                        className="fixed bottom-36 right-4 md:bottom-20 md:right-6 z-50 w-[90vw] max-w-sm sm:w-96 bg-white dark:bg-goral-900 rounded-2xl shadow-2xl border border-goral-200 dark:border-goral-700 overflow-hidden"
                     >
                         {/* Hlavička */}
                         <div className="bg-goral-700 text-white p-4 flex justify-between items-center">

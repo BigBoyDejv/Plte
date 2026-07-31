@@ -27,7 +27,7 @@ export default function LesnicaEndCards({ t }) {
               <Bike className="w-6 h-6" />
             </div>
             <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              {t?.end_card1_title || 'Návrat späť do Červeného Kláštora'}
+              {t?.end_card1_title || 'Návrat späť do Červeného Kláštora / Majere'}
             </h4>
             <p className="text-goral-300 text-xs leading-relaxed mb-4">
               {t?.end_card1_desc || 'Najobľúbenejší spôsob návratu je požičanie bicykla cez Chatu Pieniny a jazda prielomom Dunajca (cca 8 km, rovinka). Dobre funguje aj autobusová kyvadlovka a taxi.'}
@@ -48,7 +48,7 @@ export default function LesnicaEndCards({ t }) {
             </ul>
           </div>
           <a
-            href="https://chatapieniny.sk"
+            href="https://chatapieniny.sk/doprava/"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-2.5 px-4 bg-river-600 hover:bg-river-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
@@ -78,7 +78,7 @@ export default function LesnicaEndCards({ t }) {
             </ul>
           </div>
           <a
-            href="https://chatapieniny.sk"
+            href="https://chatapieniny.sk/restauracia/"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-400 text-goral-950 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"

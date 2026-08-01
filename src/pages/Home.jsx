@@ -11,6 +11,7 @@ import Chatbot from '../components/Chatbot';
 import InstallButton from '../components/InstallButton';
 import OfflineStatus from '../components/OfflineStatus';
 import WeatherBadge from '../components/WeatherBadge';
+import ShmuWeatherCard from '../components/ShmuWeatherCard';
 import AnimatedRiverWave from '../components/AnimatedRiverWave';
 import MobileFloatingBar from '../components/MobileFloatingBar';
 import DarkModeToggle from '../components/DarkModeToggle';
@@ -27,6 +28,13 @@ export default function Home() {
   const [highlightedStop, setHighlightedStop] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const stopRefs = useRef([]);
+
+  const scrollToShmu = () => {
+    const el = document.getElementById('shmu-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,10 +95,8 @@ export default function Home() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden sm:block">
-              <WeatherBadge />
-            </div>
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            <WeatherBadge onClick={scrollToShmu} />
             <DarkModeToggle />
             <InstallButton t={t} />
             <LangSelectorInHeader currentLang={lang} onChangeLang={setLang} />
@@ -108,11 +114,16 @@ export default function Home() {
         />
       </div>
 
+      <section id="shmu-section" className="max-w-4xl mx-auto px-3 sm:px-4 my-8">
+        <ShmuWeatherCard />
+      </section>
+
       <div className="h-8 bg-goral-800 folk-pattern" />
 
       <section id="stops-section" className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-folk font-bold text-goral-900 dark:text-goral-100 tracking-wide mb-4">
+
             {t.stops_title}
           </h2>
           <FolkDivider className="justify-center" />

@@ -11,6 +11,7 @@ import Admin from './pages/Admin';
 import { LiveTripProvider } from '@/contexts/LiveTripContext';
 
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { Agentation } from "agentation";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -58,6 +59,7 @@ function App() {
           <AuthenticatedApp />
         </Router>
         <Toaster />
+        {import.meta.env.DEV && <Agentation />}
       </QueryClientProvider>
     </AuthProvider>
   )

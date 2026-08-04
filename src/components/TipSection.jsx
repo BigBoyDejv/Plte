@@ -41,12 +41,14 @@ export default function TipSection({ t, isRtl, lang }) {
   const [sent, setSent] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(null);
   const [showQR, setShowQR] = useState(false);
+  const [qrFormat, setQrFormat] = useState('epc'); // 'epc' (SEPA / SK / EU) | 'spd' (QR Platba CZ)
+  const [copied, setCopied] = useState(false);
 
   // Získanie správnych súm a meny podľa jazyka
   const currentAmounts = tipAmounts[lang] || tipAmounts.sk;
   const currencySymbol = currencySymbols[lang] || '€';
 
-  // Váš IBAN
+  // IBAN
   const IBAN = 'SK46 1100 0000 0029 3773 5080';
   const accountName = 'Dávid Rušin';
 
@@ -61,6 +63,61 @@ export default function TipSection({ t, isRtl, lang }) {
     };
     const rate = rates[lang] || 1;
     return (value * rate).toFixed(2);
+  };
+
+  const cleanText = (str) => {
+    if (!str) return '';
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w\s.,-]/gi, '')
+      .trim();
+  };
+
+  // EPC QR Code (Standard SEPA Credit Transfer format recognized by Slovak and European banks)
+  const generateEpcQrString = () => {
+    const rawVal = parseFloat(amount);
+    if (isNaN(rawVal) || rawVal <= 0) return '';
+    const eurVal = getAmountInEUR(rawVal);
+    const cleanMsg = cleanText(message) || 'Sprepitne';
+    const cleanName = cleanText(accountName) || 'David Rusin';
+    const ibanClean = IBAN.replace(/\s/g, '');
+
+    return [
+      'BCD',
+      '002',
+      '1',
+      'SCT',
+      'TATRSKBX',
+      cleanName,
+      ibanClean,
+      `EUR${eurVal}`,
+      '',
+      '',
+      cleanMsg,
+      ''
+    ].join('\n');
+  };
+
+  // SPD QR Code (Czech & Slovak QR Platba standard format)
+  const generateSpdQrString = () => {
+    const rawVal = parseFloat(amount);
+    if (isNaN(rawVal) || rawVal <= 0) return '';
+    const eurVal = getAmountInEUR(rawVal);
+    const cleanMsg = cleanText(message) || 'Sprepitne';
+    const cleanName = cleanText(accountName) || 'David Rusin';
+    const ibanClean = IBAN.replace(/\s/g, '');
+
+    return `SPD*1.0*ACC:${ibanClean}*AM:${eurVal}*CC:EUR*MSG:${cleanMsg}*RN:${cleanName}`;
+  };
+
+  const generatePaymeUrl = () => {
+    const rawVal = parseFloat(amount);
+    if (isNaN(rawVal) || rawVal <= 0) return '';
+    const eurVal = getAmountInEUR(rawVal);
+    const ibanClean = IBAN.replace(/\s/g, '');
+    const msg = message || 'Sprepitné';
+    return `https://payme.sk?iban=${ibanClean}&amount=${eurVal}&message=${encodeURIComponent(msg)}&name=${encodeURIComponent(accountName)}`;
   };
 
   const handleSend = () => {
@@ -78,10 +135,17 @@ export default function TipSection({ t, isRtl, lang }) {
     setTimeout(() => setSent(false), 3000);
   };
 
-  const generatePaymentString = () => {
-    const amountInEUR = getAmountInEUR(parseFloat(amount));
-    return `iban:${IBAN.replace(/\s/g, '')}?amount=${amountInEUR}&name=${encodeURIComponent(accountName)}&msg=${encodeURIComponent(message || 'Sprepitné')}`;
+  const handleCopyIban = () => {
+    const cleanIban = IBAN.replace(/\s/g, '');
+    navigator.clipboard.writeText(cleanIban).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
+
+  const rawAmountNum = parseFloat(amount);
+  const amountEUR = !isNaN(rawAmountNum) ? getAmountInEUR(rawAmountNum) : '0.00';
+  const isNonEurCurrency = currencySymbol !== '€';
 
   const texts = {
     title: t?.tip_title || "Sprepitné pre pltníka",
@@ -93,9 +157,16 @@ export default function TipSection({ t, isRtl, lang }) {
     send: t?.tip_send || "Pokračovať",
     thanks: t?.tip_thanks || "Ďakujeme za vašu podporu!",
     qrTitle: t?.qr_title || "Skenujte QR kód",
-    qrInfo: t?.qr_info || "Naskenujte QR kód mobilom a dokončite platbu v internet bankingu.",
-    back: t?.back || "Späť"
+    qrInfo: t?.qr_info || "Naskenujte QR kód mobilnou bankovou aplikáciou a dokončite platbu.",
+    back: t?.back || "Späť",
+    copyIban: "Kopírovať IBAN",
+    copied: "Skopírované!",
+    openPayme: "Otvoriť Payme",
+    formatSepa: "SEPA QR (SK / EÚ)",
+    formatCz: "QR Platba (CZ)"
   };
+
+  const activeQrPayload = qrFormat === 'epc' ? generateEpcQrString() : generateSpdQrString();
 
   return (
     <section className="relative overflow-hidden">
@@ -126,7 +197,7 @@ export default function TipSection({ t, isRtl, lang }) {
                     {texts.title}
                   </h3>
                   <p className="text-goral-500 dark:text-goral-300 font-body text-sm sm:text-base mb-8">
-                    {texts.desc}  {/* ← TERAZ POUŽÍVA t.tip_desc */}
+                    {texts.desc}
                   </p>
 
                   <FolkDivider className="mb-8 lg:hidden" />
@@ -153,36 +224,116 @@ export default function TipSection({ t, isRtl, lang }) {
                         animate={{ opacity: 1, y: 0 }}
                         className="bg-white rounded-2xl p-6 shadow-xl border-2 border-goral-200 w-full max-w-sm mx-auto lg:mx-0 text-center"
                       >
-                        <h4 className="font-folk text-lg font-bold text-goral-800 mb-4">{texts.qrTitle}</h4>
-                        <QRCodeSVG
-                          value={generatePaymentString()}
-                          size={200}
-                          className="mx-auto mb-4"
-                          bgColor="#ffffff"
-                          fgColor="#2e1f12"
-                        />
-                        <p className="text-xs text-goral-500 mb-3">
+                        <h4 className="font-folk text-lg font-bold text-goral-800 mb-3">{texts.qrTitle}</h4>
+
+                        {/* Format selector tabs */}
+                        <div className="flex bg-goral-100 p-1 rounded-xl mb-4 text-xs font-semibold">
+                          <button
+                            type="button"
+                            onClick={() => setQrFormat('epc')}
+                            className={`flex-1 py-1.5 rounded-lg transition-all ${
+                              qrFormat === 'epc'
+                                ? 'bg-white text-goral-900 shadow-sm font-bold'
+                                : 'text-goral-600 hover:text-goral-900'
+                            }`}
+                          >
+                            {texts.formatSepa}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setQrFormat('spd')}
+                            className={`flex-1 py-1.5 rounded-lg transition-all ${
+                              qrFormat === 'spd'
+                                ? 'bg-white text-goral-900 shadow-sm font-bold'
+                                : 'text-goral-600 hover:text-goral-900'
+                            }`}
+                          >
+                            {texts.formatCz}
+                          </button>
+                        </div>
+
+                        <div className="bg-white p-3 rounded-xl inline-block border border-goral-100 shadow-inner mb-3">
+                          <QRCodeSVG
+                            value={activeQrPayload}
+                            size={210}
+                            level="M"
+                            marginSize={2}
+                            className="mx-auto"
+                            bgColor="#ffffff"
+                            fgColor="#1e1810"
+                          />
+                        </div>
+
+                        <p className="text-xs text-goral-500 mb-3 leading-relaxed">
                           {texts.qrInfo}
                         </p>
-                        <div className="bg-goral-50 rounded-lg p-2 mb-4">
-                          <p className="text-sm font-mono text-goral-700 break-all">
-                            {IBAN}
-                          </p>
-                          <p className="text-sm font-bold text-goral-800 mt-1">
-                            {parseFloat(amount).toFixed(2)} {currencySymbol}
-                          </p>
-                          {message && (
-                            <p className="text-xs text-goral-500 mt-1 italic">
-                              "{message}"
+
+                        <div className="bg-goral-50 rounded-xl p-3 mb-4 border border-goral-200/60">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <p className="text-xs font-mono font-bold text-goral-800 break-all select-all">
+                              {IBAN}
                             </p>
+                            <button
+                              type="button"
+                              onClick={handleCopyIban}
+                              className="px-2 py-1 text-[11px] font-medium bg-goral-200 hover:bg-goral-300 text-goral-800 rounded-md transition-colors flex-shrink-0 flex items-center gap-1"
+                              title="Kopírovať IBAN"
+                            >
+                              {copied ? (
+                                <span className="text-emerald-700 font-bold">{texts.copied}</span>
+                              ) : (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  </svg>
+                                  {texts.copyIban}
+                                </>
+                              )}
+                            </button>
+                          </div>
+
+                          <div className="mt-2 pt-2 border-t border-goral-200/50 flex justify-between items-center text-xs">
+                            <span className="text-goral-500 font-medium">Suma platby:</span>
+                            <span className="font-bold text-goral-900 text-sm">
+                              {rawAmountNum.toFixed(2)} {currencySymbol}
+                              {isNonEurCurrency && (
+                                <span className="text-goral-500 text-xs ml-1 font-normal">
+                                  (≈ {amountEUR} €)
+                                </span>
+                              )}
+                            </span>
+                          </div>
+
+                          {message && (
+                            <div className="mt-1 pt-1 flex justify-between items-center text-xs">
+                              <span className="text-goral-500">Správa:</span>
+                              <span className="text-goral-700 italic truncate max-w-[180px]">
+                                "{message}"
+                              </span>
+                            </div>
                           )}
                         </div>
-                        <button
-                          onClick={handleCloseQR}
-                          className="w-full py-2 rounded-xl bg-goral-700 hover:bg-goral-800 text-white transition-colors"
-                        >
-                          {texts.back}
-                        </button>
+
+                        <div className="flex gap-2">
+                          <a
+                            href={generatePaymeUrl()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-2.5 rounded-xl border border-goral-400 text-goral-800 hover:bg-goral-100 text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+                          >
+                            <svg className="w-4 h-4 text-goral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            {texts.openPayme}
+                          </a>
+                          <button
+                            type="button"
+                            onClick={handleCloseQR}
+                            className="flex-1 py-2.5 rounded-xl bg-goral-700 hover:bg-goral-800 text-white text-xs font-semibold transition-colors"
+                          >
+                            {texts.back}
+                          </button>
+                        </div>
                       </motion.div>
                     ) : !showForm ? (
                       <motion.button

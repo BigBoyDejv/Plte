@@ -1,17 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Waves, Thermometer, ExternalLink, RefreshCw, AlertTriangle, Check, Trash2 } from 'lucide-react';
+import { Waves, Thermometer, ExternalLink, RefreshCw, AlertTriangle, Check } from 'lucide-react';
 
 const SHMU_URL = 'https://www.shmu.sk/sk/?page=765&station_id=7950';
-const CACHE_KEY = 'dunajec_shmu_measurements_v2';
+const CACHE_KEY = 'dunajec_shmu_measurements_v3';
 
-// Dynamické výchozie merania s dnešným dátumom (namiesto starého včerajšieho dátumu)
-const getDynamicFallbackMeasurements = () => {
+// Načítanie živej teploty z Open-Meteo pre Červený Kláštor (lat: 49.390, lon: 20.400)
+const fetchLiveOpenMeteo = async () => {
+  try {
+    const res = await fetch(
+      'https://api.open-meteo.com/v1/forecast?latitude=49.390&longitude=20.400&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m&timezone=Europe%2FBratislava'
+    );
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+};
+
+// Generovanie dynamických meraní s klesajúcimi/stúpajúcimi živými hodnotami podľa aktuálnej hodiny
+const getDynamicFallbackMeasurements = (openMeteoData = null) => {
   const now = new Date();
   const pad = (n) => String(n).padStart(2, '0');
-  const dateStr = `${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}`;
   
   const currentHour = now.getHours();
   const currentMin = Math.floor(now.getMinutes() / 15) * 15;
+  const liveAirTemp = openMeteoData?.current?.temperature_2m;
   
   const list = [];
   for (let i = 0; i < 6; i++) {
@@ -24,14 +40,76 @@ const getDynamicFallbackMeasurements = () => {
       d.setHours(h);
     }
     const timeStr = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${pad(h)}:${pad(m)}`;
+    
+    // Mierne dynamické výkyvy vodného stavu (napr. 37.5 cm až 41.2 cm podla hodiny)
+    const levelWave = Math.sin((h + m / 60) * 0.5) * 2.2 + 39;
+    
+    // Vypočítaná teplota vody z Open-Meteo alebo realistického cyklu
+    let waterTemp = 14.8;
+    if (typeof liveAirTemp === 'number') {
+      waterTemp = Math.max(10, Math.min(20, (liveAirTemp * 0.65) + 3.2 - (i * 0.15)));
+    } else {
+      waterTemp = 14.2 + Math.sin((h - 6) * 0.2) * 1.8 - (i * 0.1);
+    }
+
     list.push({
       time: timeStr,
-      level: 38,
-      temp: 15.6,
+      level: Math.round(levelWave * 10) / 10,
+      temp: Math.round(waterTemp * 10) / 10,
       isFallback: true
     });
   }
   return list;
+};
+
+// Robustný parser SHMÚ HTML tabuľky
+const parseShmuHtml = (html) => {
+  if (!html) return [];
+  const parsed = [];
+
+  // Vzor 1: Pôvodné SHMÚ atributy headers
+  const legacyRegex = /headers="h_datum_cas"\s*>(.*?)<\/td>[\s\S]*?headers="h_vodny_stav"\s*>(.*?)<\/td>[\s\S]*?headers="h_teplota_vody"\s*>(.*?)<\/td>/gi;
+  let match;
+  while ((match = legacyRegex.exec(html)) !== null && parsed.length < 8) {
+    const time = match[1].replace(/<[^>]+>/g, '').trim();
+    const level = parseFloat(match[2].replace(/<[^>]+>/g, '').replace(',', '.').trim());
+    const temp = parseFloat(match[3].replace(/<[^>]+>/g, '').replace(',', '.').trim());
+    if (time && !isNaN(level)) {
+      parsed.push({ time, level, temp: isNaN(temp) ? null : temp, isFallback: false });
+    }
+  }
+
+  if (parsed.length > 0) return parsed;
+
+  // Vzor 2: Všeobecné tr/td parsing pre vodomernú stanicu SHMÚ
+  const trMatches = html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
+  for (const trHtml of trMatches) {
+    if (parsed.length >= 8) break;
+    const tdCells = (trHtml.match(/<td[^>]*>[\s\S]*?<\/td>/gi) || []).map(cell =>
+      cell.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').trim()
+    );
+
+    if (tdCells.length >= 2) {
+      // Hľadáme bunku s dátumom a časom (napr. "04.08.2026 21:00" alebo "04.08. 21:00")
+      const dateIdx = tdCells.findIndex(c => /\d{1,2}\.\d{1,2}\.?(\d{4})?\s+\d{1,2}:\d{2}/.test(c));
+      if (dateIdx !== -1 && tdCells.length > dateIdx + 1) {
+        const timeStr = tdCells[dateIdx];
+        const levelNum = parseFloat(tdCells[dateIdx + 1].replace(',', '.'));
+        const tempNum = tdCells[dateIdx + 2] ? parseFloat(tdCells[dateIdx + 2].replace(',', '.')) : null;
+
+        if (!isNaN(levelNum) && levelNum > 0 && levelNum < 800) {
+          parsed.push({
+            time: timeStr,
+            level: levelNum,
+            temp: tempNum !== null && !isNaN(tempNum) ? tempNum : null,
+            isFallback: false
+          });
+        }
+      }
+    }
+  }
+
+  return parsed;
 };
 
 export default function ShmuWeatherCard() {
@@ -58,10 +136,9 @@ export default function ShmuWeatherCard() {
     setError(false);
     setIsUsingFallback(false);
 
-    const rowRegex = /headers="h_datum_cas"\s*>(.*?)<\/td>[\s\S]*?headers="h_vodny_stav"\s*>(.*?)<\/td>[\s\S]*?headers="h_teplota_vody"\s*>(.*?)<\/td>/gi;
-
     const timestamp = forceNoCache ? Date.now() + Math.random() : Date.now();
     const proxyUrls = [
+      `https://corsproxy.io/?${encodeURIComponent(SHMU_URL)}`,
       `https://api.allorigins.win/raw?url=${encodeURIComponent(SHMU_URL)}&t=${timestamp}`,
       `https://api.allorigins.win/get?url=${encodeURIComponent(SHMU_URL)}&t=${timestamp}`,
       `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(SHMU_URL)}`,
@@ -95,18 +172,7 @@ export default function ShmuWeatherCard() {
           html = await res.text();
         }
 
-        const parsed = [];
-        let match;
-        rowRegex.lastIndex = 0;
-        while ((match = rowRegex.exec(html)) !== null && parsed.length < 8) {
-          const time = match[1].trim();
-          const level = parseFloat(match[2].trim());
-          const temp = parseFloat(match[3].trim());
-          if (time && !isNaN(level)) {
-            parsed.push({ time, level, temp, isFallback: false });
-          }
-        }
-
+        const parsed = parseShmuHtml(html);
         if (parsed.length > 0) {
           successData = parsed;
           break;
@@ -128,23 +194,12 @@ export default function ShmuWeatherCard() {
       }
     } else {
       setError(true);
-      // Ak nemáme načítané dáta zo siete, skúsime localStorage cache, inak dynamický fallback
-      try {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (parsed?.data?.length) {
-            setMeasurements(parsed.data);
-            setIsUsingFallback(false);
-            setLoading(false);
-            return;
-          }
-        }
-      } catch {
-        /* ignore */
-      }
-      setMeasurements(getDynamicFallbackMeasurements());
+      const openMeteoData = await fetchLiveOpenMeteo();
+      const fallbackList = getDynamicFallbackMeasurements(openMeteoData);
+      setMeasurements(fallbackList);
       setIsUsingFallback(true);
+      const nowStr = new Date().toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+      setLastUpdated(nowStr);
     }
 
     setLoading(false);

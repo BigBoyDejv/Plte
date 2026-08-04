@@ -34,6 +34,238 @@ const currencySymbols = {
   he: '₪',
 };
 
+// Kompletné preklady pre formulár a QR kód v 12 jazykoch
+const tipTranslations = {
+  sk: {
+    title: "Sprepitné pre pltníka",
+    desc: "Páčila sa Vám plavba? Podporte nášho pltníka sprepitným!",
+    button: "Zanechať sprepitné",
+    placeholder: "Suma",
+    messagePlaceholder: "Správa pre pltníka (voliteľné)",
+    cancel: "Zrušiť",
+    send: "Pokračovať",
+    thanks: "Ďakujeme za vašu podporu!",
+    qrTitle: "Skenujte QR kód",
+    qrInfo: "Naskenujte QR kód mobilnou bankovou aplikáciou a dokončite platbu.",
+    back: "Späť",
+    copyIban: "Kopírovať IBAN",
+    copied: "Skopírované!",
+    formatSepa: "SEPA QR (SK / EÚ)",
+    formatCz: "QR Platba (CZ)",
+    amountPayment: "Suma platby:",
+    messageLabel: "Správa:"
+  },
+  en: {
+    title: "Tip for the Raftsman",
+    desc: "Did you enjoy the rafting trip? Support our raftsman with a tip!",
+    button: "Leave a Tip",
+    placeholder: "Amount",
+    messagePlaceholder: "Message for the raftsman (optional)",
+    cancel: "Cancel",
+    send: "Continue",
+    thanks: "Thank you for your support!",
+    qrTitle: "Scan QR Code",
+    qrInfo: "Scan the QR code with your mobile banking app to complete the payment.",
+    back: "Back",
+    copyIban: "Copy IBAN",
+    copied: "Copied!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "QR Payment (CZ)",
+    amountPayment: "Payment amount:",
+    messageLabel: "Message:"
+  },
+  pl: {
+    title: "Napiwek dla flisaka",
+    desc: "Podobał Ci się spływ? Wspieraj naszego flisaka napiwkiem!",
+    button: "Zostaw napiwek",
+    placeholder: "Kwota",
+    messagePlaceholder: "Wiadomość dla flisaka (opcjonalnie)",
+    cancel: "Anuluj",
+    send: "Dalej",
+    thanks: "Dziękujemy za Twoje wsparcie!",
+    qrTitle: "Zeskanuj kod QR",
+    qrInfo: "Zeskanuj kod QR aplikacją bankową, aby dokończyć płatność.",
+    back: "Wstecz",
+    copyIban: "Kopiuj IBAN",
+    copied: "Skopiowano!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "Płatność QR (CZ)",
+    amountPayment: "Kwota płatności:",
+    messageLabel: "Wiadomość:"
+  },
+  de: {
+    title: "Trinkgeld für den Flößer",
+    desc: "Hat Ihnen die Fahrt gefallen? Unterstützen Sie unseren Flößer mit einem Trinkgeld!",
+    button: "Trinkgeld geben",
+    placeholder: "Betrag",
+    messagePlaceholder: "Nachricht an den Flößer (optional)",
+    cancel: "Abbrechen",
+    send: "Weiter",
+    thanks: "Vielen Dank für Ihre Unterstützung!",
+    qrTitle: "QR-Code scannen",
+    qrInfo: "Scannen Sie den QR-Code mit Ihrer Banking-App, um die Zahlung abzuschließen.",
+    back: "Zurück",
+    copyIban: "IBAN kopieren",
+    copied: "Kopiert!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "QR-Zahlung (CZ)",
+    amountPayment: "Zahlungsbetrag:",
+    messageLabel: "Nachricht:"
+  },
+  hu: {
+    title: "Borravaló a tutajosnak",
+    desc: "Tetszett a tutajozás? Támogassa tutajosunkat borravalóval!",
+    button: "Borravaló adása",
+    placeholder: "Összeg",
+    messagePlaceholder: "Üzenet a tutajosnak (opcionális)",
+    cancel: "Mégse",
+    send: "Folytatás",
+    thanks: "Köszönjük a támogatást!",
+    qrTitle: "QR-kód beolvasása",
+    qrInfo: "Olvassa be a QR-kódot mobilbanki alkalmazásával a fizetés befejezéséhez.",
+    back: "Vissza",
+    copyIban: "IBAN másolása",
+    copied: "Másolva!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "QR Fizetés (CZ)",
+    amountPayment: "Fizetendő összeg:",
+    messageLabel: "Üzenet:"
+  },
+  cz: {
+    title: "Spropitné pro voraře",
+    desc: "Líbila se Vám plavba? Podpořte našeho voraře spropitným!",
+    button: "Zanechat spropitné",
+    placeholder: "Částka",
+    messagePlaceholder: "Zpráva pro voraře (volitelné)",
+    cancel: "Zrušit",
+    send: "Pokračovat",
+    thanks: "Děkujeme za vaši podporu!",
+    qrTitle: "Naskenujte QR kód",
+    qrInfo: "Naskenujte QR kód mobilním bankovnictvím a dokončete platbu.",
+    back: "Zpět",
+    copyIban: "Kopírovat IBAN",
+    copied: "Zkopírováno!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "QR Platba (CZ)",
+    amountPayment: "Částka platby:",
+    messageLabel: "Zpráva:"
+  },
+  ru: {
+    title: "Чаевые для плотогона",
+    desc: "Понравилось плавание? Поддержите нашего плотогона чаевыми!",
+    button: "Оставить чаевые",
+    placeholder: "Сумма",
+    messagePlaceholder: "Сообщение плотогону (необязательно)",
+    cancel: "Отмена",
+    send: "Продолжить",
+    thanks: "Спасибо за вашу поддержку!",
+    qrTitle: "Сканируйте QR-код",
+    qrInfo: "Отсканируйте QR-код банковским приложением для оплаты.",
+    back: "Назад",
+    copyIban: "Копировать IBAN",
+    copied: "Скопировано!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "QR-платеж (CZ)",
+    amountPayment: "Сумма платежа:",
+    messageLabel: "Сообщение:"
+  },
+  fr: {
+    title: "Pourboire pour le batelier",
+    desc: "Vous avez aimé la descente ? Soutenez notre batelier avec un pourboire !",
+    button: "Laisser un pourboire",
+    placeholder: "Montant",
+    messagePlaceholder: "Message au batelier (optionnel)",
+    cancel: "Annuler",
+    send: "Continuer",
+    thanks: "Merci pour votre soutien !",
+    qrTitle: "Scanner le code QR",
+    qrInfo: "Scannez le code QR avec votre application bancaire mobile pour effectuer le paiement.",
+    back: "Retour",
+    copyIban: "Copier l'IBAN",
+    copied: "Copié !",
+    formatSepa: "SEPA QR (SK / UE)",
+    formatCz: "Paiement QR (CZ)",
+    amountPayment: "Montant du paiement :",
+    messageLabel: "Message :"
+  },
+  es: {
+    title: "Propina para el balsero",
+    desc: "¿Le gustó el viaje en balsa? ¡Apoye a nuestro balsero con una propina!",
+    button: "Dejar propina",
+    placeholder: "Monto",
+    messagePlaceholder: "Mensaje para el balsero (opcional)",
+    cancel: "Cancelar",
+    send: "Continuar",
+    thanks: "¡Gracias por su apoyo!",
+    qrTitle: "Escanear código QR",
+    qrInfo: "Escanee el código QR con su aplicación bancaria móvil para completar el pago.",
+    back: "Volver",
+    copyIban: "Copiar IBAN",
+    copied: "¡Copiado!",
+    formatSepa: "SEPA QR (SK / UE)",
+    formatCz: "Pago QR (CZ)",
+    amountPayment: "Monto del pago:",
+    messageLabel: "Mensaje:"
+  },
+  lv: {
+    title: "Dzeramnauda plostniekam",
+    desc: "Vai jums patika brauciens? Atbalstiet mūsu plostnieku ar dzeramnaudu!",
+    button: "Atstāt dzeramnaudu",
+    placeholder: "Summa",
+    messagePlaceholder: "Ziņa plostniekam (pēc izvēles)",
+    cancel: "Atcelt",
+    send: "Turpināt",
+    thanks: "Paldies par jūsu atbalstu!",
+    qrTitle: "Skenēt QR kodu",
+    qrInfo: "Skenējiet QR kodu ar savu bankas lietotni, lai pabeigtu maksājumu.",
+    back: "Atpakaļ",
+    copyIban: "Kopēt IBAN",
+    copied: "Nokopēts!",
+    formatSepa: "SEPA QR (SK / ES)",
+    formatCz: "QR Maksājums (CZ)",
+    amountPayment: "Maksājuma summa:",
+    messageLabel: "Ziņa:"
+  },
+  lt: {
+    title: "Arbatpinigiai sielininkui",
+    desc: "Ar patiko plaukimas? Palaikykite mūsų sielininką arbatpinigiais!",
+    button: "Palikti arbatpinigių",
+    placeholder: "Suma",
+    messagePlaceholder: "Žinutė sielininkui (neprivaloma)",
+    cancel: "Atšaukti",
+    send: "Tęsti",
+    thanks: "Ačiū už jūsų palaikymą!",
+    qrTitle: "Nuskenuoti QR kodą",
+    qrInfo: "Nuskenuokite QR kodą savo banko programėle ir užbaikite mokėjimą.",
+    back: "Atgal",
+    copyIban: "Kopijuoti IBAN",
+    copied: "Nukopijuota!",
+    formatSepa: "SEPA QR (SK / ES)",
+    formatCz: "QR Mokėjimas (CZ)",
+    amountPayment: "Mokėjimo suma:",
+    messageLabel: "Žinutė:"
+  },
+  he: {
+    title: "טיפ לרפסודאי",
+    desc: "נהניתם מהשיט? תמכו ברפסודאי שלנו בטיפ!",
+    button: "להשאיר טיפ",
+    placeholder: "סכום",
+    messagePlaceholder: "הודעה לרפסודאי (רשות)",
+    cancel: "ביטול",
+    send: "המשך",
+    thanks: "תודה על התמיכה שלך!",
+    qrTitle: "סרוק קוד QR",
+    qrInfo: "סרוק את קוד ה-QR באפליקציית הבנק שלך להשלמת התשלום.",
+    back: "חזרה",
+    copyIban: "העתק IBAN",
+    copied: "הועתק!",
+    formatSepa: "SEPA QR (SK / EU)",
+    formatCz: "QR Payment (CZ)",
+    amountPayment: "סכום תשלום:",
+    messageLabel: "הודעה:"
+  }
+};
+
 export default function TipSection({ t, isRtl, lang }) {
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState('');
@@ -41,7 +273,6 @@ export default function TipSection({ t, isRtl, lang }) {
   const [sent, setSent] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(null);
   const [showQR, setShowQR] = useState(false);
-  const [qrFormat, setQrFormat] = useState('epc'); // 'epc' (SEPA / SK / EU) | 'spd' (QR Platba CZ)
   const [copied, setCopied] = useState(false);
 
   // Získanie správnych súm a meny podľa jazyka
@@ -99,27 +330,6 @@ export default function TipSection({ t, isRtl, lang }) {
     ].join('\n');
   };
 
-  // SPD QR Code (Czech & Slovak QR Platba standard format)
-  const generateSpdQrString = () => {
-    const rawVal = parseFloat(amount);
-    if (isNaN(rawVal) || rawVal <= 0) return '';
-    const eurVal = getAmountInEUR(rawVal);
-    const cleanMsg = cleanText(message) || 'Sprepitne';
-    const cleanName = cleanText(accountName) || 'David Rusin';
-    const ibanClean = IBAN.replace(/\s/g, '');
-
-    return `SPD*1.0*ACC:${ibanClean}*AM:${eurVal}*CC:EUR*MSG:${cleanMsg}*RN:${cleanName}`;
-  };
-
-  const generatePaymeUrl = () => {
-    const rawVal = parseFloat(amount);
-    if (isNaN(rawVal) || rawVal <= 0) return '';
-    const eurVal = getAmountInEUR(rawVal);
-    const ibanClean = IBAN.replace(/\s/g, '');
-    const msg = message || 'Sprepitné';
-    return `https://payme.sk?iban=${ibanClean}&amount=${eurVal}&message=${encodeURIComponent(msg)}&name=${encodeURIComponent(accountName)}`;
-  };
-
   const handleSend = () => {
     if (!amount || parseFloat(amount) <= 0) return;
     setShowQR(true);
@@ -147,26 +357,27 @@ export default function TipSection({ t, isRtl, lang }) {
   const amountEUR = !isNaN(rawAmountNum) ? getAmountInEUR(rawAmountNum) : '0.00';
   const isNonEurCurrency = currencySymbol !== '€';
 
+  const langDict = tipTranslations[lang] || tipTranslations.sk;
+
   const texts = {
-    title: t?.tip_title || "Sprepitné pre pltníka",
-    desc: t?.tip_desc || "Páčila sa Vám plavba? Podporte nášho pltníka sprepitným!",
-    button: t?.tip_button || "Zanechať sprepitné",
-    placeholder: t?.tip_placeholder || "Suma",
-    messagePlaceholder: t?.tip_message || "Správa pre pltníka (voliteľné)",
-    cancel: t?.tip_cancel || "Zrušiť",
-    send: t?.tip_send || "Pokračovať",
-    thanks: t?.tip_thanks || "Ďakujeme za vašu podporu!",
-    qrTitle: t?.qr_title || "Skenujte QR kód",
-    qrInfo: t?.qr_info || "Naskenujte QR kód mobilnou bankovou aplikáciou a dokončite platbu.",
-    back: t?.back || "Späť",
-    copyIban: "Kopírovať IBAN",
-    copied: "Skopírované!",
-    openPayme: "Otvoriť Payme",
-    formatSepa: "SEPA QR (SK / EÚ)",
-    formatCz: "QR Platba (CZ)"
+    title: t?.tip_title || langDict.title,
+    desc: t?.tip_desc || t?.tip_subtitle || langDict.desc,
+    button: t?.tip_button || langDict.button,
+    placeholder: t?.tip_placeholder || langDict.placeholder,
+    messagePlaceholder: t?.tip_message || langDict.messagePlaceholder,
+    cancel: t?.tip_cancel || langDict.cancel,
+    send: t?.tip_send || langDict.send,
+    thanks: t?.tip_thanks || langDict.thanks,
+    qrTitle: t?.qr_title || langDict.qrTitle,
+    qrInfo: t?.qr_info || langDict.qrInfo,
+    back: t?.back || langDict.back,
+    copyIban: t?.copy_iban || langDict.copyIban,
+    copied: t?.copied || langDict.copied,
+    amountPayment: langDict.amountPayment,
+    messageLabel: langDict.messageLabel
   };
 
-  const activeQrPayload = qrFormat === 'epc' ? generateEpcQrString() : generateSpdQrString();
+  const activeQrPayload = generateEpcQrString();
 
   return (
     <section className="relative overflow-hidden">
@@ -226,32 +437,6 @@ export default function TipSection({ t, isRtl, lang }) {
                       >
                         <h4 className="font-folk text-lg font-bold text-goral-800 mb-3">{texts.qrTitle}</h4>
 
-                        {/* Format selector tabs */}
-                        <div className="flex bg-goral-100 p-1 rounded-xl mb-4 text-xs font-semibold">
-                          <button
-                            type="button"
-                            onClick={() => setQrFormat('epc')}
-                            className={`flex-1 py-1.5 rounded-lg transition-all ${
-                              qrFormat === 'epc'
-                                ? 'bg-white text-goral-900 shadow-sm font-bold'
-                                : 'text-goral-600 hover:text-goral-900'
-                            }`}
-                          >
-                            {texts.formatSepa}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQrFormat('spd')}
-                            className={`flex-1 py-1.5 rounded-lg transition-all ${
-                              qrFormat === 'spd'
-                                ? 'bg-white text-goral-900 shadow-sm font-bold'
-                                : 'text-goral-600 hover:text-goral-900'
-                            }`}
-                          >
-                            {texts.formatCz}
-                          </button>
-                        </div>
-
                         <div className="bg-white p-3 rounded-xl inline-block border border-goral-100 shadow-inner mb-3">
                           <QRCodeSVG
                             value={activeQrPayload}
@@ -269,14 +454,14 @@ export default function TipSection({ t, isRtl, lang }) {
                         </p>
 
                         <div className="bg-goral-50 rounded-xl p-3 mb-4 border border-goral-200/60">
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <p className="text-xs font-mono font-bold text-goral-800 break-all select-all">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-1">
+                            <p className="text-[11px] sm:text-xs font-mono font-bold text-goral-800 tracking-tight whitespace-nowrap select-all">
                               {IBAN}
                             </p>
                             <button
                               type="button"
                               onClick={handleCopyIban}
-                              className="px-2 py-1 text-[11px] font-medium bg-goral-200 hover:bg-goral-300 text-goral-800 rounded-md transition-colors flex-shrink-0 flex items-center gap-1"
+                              className="w-full sm:w-auto px-2.5 py-1 text-[11px] font-medium bg-goral-200 hover:bg-goral-300 text-goral-800 rounded-md transition-colors flex-shrink-0 flex items-center justify-center gap-1"
                               title="Kopírovať IBAN"
                             >
                               {copied ? (
@@ -293,7 +478,7 @@ export default function TipSection({ t, isRtl, lang }) {
                           </div>
 
                           <div className="mt-2 pt-2 border-t border-goral-200/50 flex justify-between items-center text-xs">
-                            <span className="text-goral-500 font-medium">Suma platby:</span>
+                            <span className="text-goral-500 font-medium">{texts.amountPayment}</span>
                             <span className="font-bold text-goral-900 text-sm">
                               {rawAmountNum.toFixed(2)} {currencySymbol}
                               {isNonEurCurrency && (
@@ -306,7 +491,7 @@ export default function TipSection({ t, isRtl, lang }) {
 
                           {message && (
                             <div className="mt-1 pt-1 flex justify-between items-center text-xs">
-                              <span className="text-goral-500">Správa:</span>
+                              <span className="text-goral-500">{texts.messageLabel}</span>
                               <span className="text-goral-700 italic truncate max-w-[180px]">
                                 "{message}"
                               </span>
@@ -314,26 +499,13 @@ export default function TipSection({ t, isRtl, lang }) {
                           )}
                         </div>
 
-                        <div className="flex gap-2">
-                          <a
-                            href={generatePaymeUrl()}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 py-2.5 rounded-xl border border-goral-400 text-goral-800 hover:bg-goral-100 text-xs font-semibold transition-colors flex items-center justify-center gap-1"
-                          >
-                            <svg className="w-4 h-4 text-goral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                            {texts.openPayme}
-                          </a>
-                          <button
-                            type="button"
-                            onClick={handleCloseQR}
-                            className="flex-1 py-2.5 rounded-xl bg-goral-700 hover:bg-goral-800 text-white text-xs font-semibold transition-colors"
-                          >
-                            {texts.back}
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCloseQR}
+                          className="w-full py-2.5 rounded-xl bg-goral-700 hover:bg-goral-800 text-white text-xs sm:text-sm font-semibold transition-colors shadow-md"
+                        >
+                          {texts.back}
+                        </button>
                       </motion.div>
                     ) : !showForm ? (
                       <motion.button

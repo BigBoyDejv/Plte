@@ -17,7 +17,13 @@ import TipsTrackerCard from '@/components/TipsTrackerCard';
 export default function Admin() {
   const { tripState, tripActive, tripRunning, elapsedSeconds, refresh } = useLiveTrip();
   const [pin, setPin] = useState('');
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(() => {
+    try {
+      return sessionStorage.getItem('dunajec_admin_unlocked') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -45,6 +51,11 @@ export default function Admin() {
     }
     if (pin === expected) {
       setUnlocked(true);
+      try {
+        sessionStorage.setItem('dunajec_admin_unlocked', 'true');
+      } catch {
+        /* ignore */
+      }
       setError('');
     } else {
       setError('Nesprávny PIN');

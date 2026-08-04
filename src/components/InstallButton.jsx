@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 function isStandalone() {
     return (
@@ -16,7 +17,7 @@ function detectBrowser() {
     return 'chrome';
 }
 
-// --- Modálne okno pre Safari (preložené) ---
+// --- Modálne okno pre Safari ---
 function SafariModal({ onClose, t }) {
     const texts = {
         title: t?.install_safari_title || "Pridať na domovskú obrazovku",
@@ -29,87 +30,45 @@ function SafariModal({ onClose, t }) {
     };
 
     return (
-        <div onClick={onClose} style={{
-            position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.55)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 9999,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-            <div onClick={e => e.stopPropagation()} style={{
-                width: '85%',
-                maxWidth: 320,
-                background: '#1c1c1e',
-                borderRadius: 20,
-                padding: '24px 20px 20px',
-                color: '#fff',
-                textAlign: 'center',
-            }}>
-                {/* Ikona */}
-                <div style={{
-                    width: 48, height: 48,
-                    background: '#2c2c2e',
-                    borderRadius: 12,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 16px',
-                }}>
+        <div
+            onClick={onClose}
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+        >
+            <div
+                onClick={e => e.stopPropagation()}
+                className="w-full max-w-xs bg-[#1c1c1e] rounded-3xl p-6 text-white text-center shadow-2xl border border-white/10"
+            >
+                <div className="w-12 h-12 bg-[#2c2c2e] rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                 </div>
 
-                <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 18 }}>
-                    {texts.title}
-                </p>
-                <p style={{ margin: '0 0 16px', fontSize: 14, opacity: 0.6 }}>
-                    {texts.subtitle}
-                </p>
+                <p className="text-lg font-bold mb-1">{texts.title}</p>
+                <p className="text-xs text-white/60 mb-4">{texts.subtitle}</p>
 
-                <div style={{ textAlign: 'left', marginBottom: 20 }}>
-                    <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-                        <div style={{
-                            width: 24, height: 24, borderRadius: 12,
-                            background: '#3a3a3c', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center',
-                            fontSize: 12, fontWeight: 600, flexShrink: 0
-                        }}>1</div>
-                        <div style={{ fontSize: 14 }}>{texts.step1}</div>
+                <div className="text-left mb-5 space-y-3 text-xs">
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-[#3a3a3c] flex items-center justify-center font-bold shrink-0">1</div>
+                        <div>{texts.step1}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-                        <div style={{
-                            width: 24, height: 24, borderRadius: 12,
-                            background: '#3a3a3c', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center',
-                            fontSize: 12, fontWeight: 600, flexShrink: 0
-                        }}>2</div>
-                        <div style={{ fontSize: 14 }}>{texts.step2}</div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-[#3a3a3c] flex items-center justify-center font-bold shrink-0">2</div>
+                        <div>{texts.step2}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-                        <div style={{
-                            width: 24, height: 24, borderRadius: 12,
-                            background: '#3a3a3c', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center',
-                            fontSize: 12, fontWeight: 600, flexShrink: 0
-                        }}>3</div>
-                        <div style={{ fontSize: 14 }}>{texts.step3}</div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-[#3a3a3c] flex items-center justify-center font-bold shrink-0">3</div>
+                        <div>{texts.step3}</div>
                     </div>
                 </div>
 
-                <p style={{ margin: '0 0 20px', fontSize: 13, opacity: 0.6 }}>
-                    {texts.info}
-                </p>
+                <p className="text-xs text-white/60 mb-5">{texts.info}</p>
 
-                <button onClick={onClose} style={{
-                    width: '100%',
-                    padding: '12px',
-                    borderRadius: 12,
-                    border: 'none',
-                    background: '#3a3a3c',
-                    color: '#fff',
-                    fontSize: 15,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                }}>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full py-3 rounded-xl bg-[#3a3a3c] hover:bg-[#4a4a4c] text-white text-sm font-semibold transition-colors"
+                >
                     {texts.close}
                 </button>
             </div>
@@ -126,38 +85,28 @@ function OperaModal({ onClose, t }) {
     };
 
     return (
-        <div onClick={onClose} style={{
-            position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.55)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 9999,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-            <div onClick={e => e.stopPropagation()} style={{
-                width: '85%', maxWidth: 320,
-                background: '#1c1c1e',
-                borderRadius: 20,
-                padding: '24px 20px 20px',
-                color: '#fff',
-                textAlign: 'center',
-            }}>
-                <div style={{
-                    width: 48, height: 48,
-                    background: '#2c2c2e',
-                    borderRadius: 12,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 16px',
-                }}>
+        <div
+            onClick={onClose}
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+        >
+            <div
+                onClick={e => e.stopPropagation()}
+                className="w-full max-w-xs bg-[#1c1c1e] rounded-3xl p-6 text-white text-center shadow-2xl border border-white/10"
+            >
+                <div className="w-12 h-12 bg-[#2c2c2e] rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                 </div>
-                <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 18 }}>{texts.title}</p>
-                <p style={{ margin: '0 0 24px', fontSize: 14, opacity: 0.6 }}>{texts.step}</p>
-                <button onClick={onClose} style={{
-                    width: '100%', padding: '12px', borderRadius: 12,
-                    border: 'none', background: '#3a3a3c', color: '#fff', fontSize: 15, cursor: 'pointer',
-                }}>{texts.close}</button>
+                <p className="text-lg font-bold mb-2">{texts.title}</p>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed">{texts.step}</p>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full py-3 rounded-xl bg-[#3a3a3c] hover:bg-[#4a4a4c] text-white text-sm font-semibold transition-colors"
+                >
+                    {texts.close}
+                </button>
             </div>
         </div>
     );
@@ -173,39 +122,29 @@ function FirefoxModal({ onClose, t }) {
     };
 
     return (
-        <div onClick={onClose} style={{
-            position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.55)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 9999,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-            <div onClick={e => e.stopPropagation()} style={{
-                width: '85%', maxWidth: 320,
-                background: '#1c1c1e',
-                borderRadius: 20,
-                padding: '24px 20px 20px',
-                color: '#fff',
-                textAlign: 'center',
-            }}>
-                <div style={{
-                    width: 48, height: 48,
-                    background: '#2c2c2e',
-                    borderRadius: 12,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 16px',
-                }}>
+        <div
+            onClick={onClose}
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+        >
+            <div
+                onClick={e => e.stopPropagation()}
+                className="w-full max-w-xs bg-[#1c1c1e] rounded-3xl p-6 text-white text-center shadow-2xl border border-white/10"
+            >
+                <div className="w-12 h-12 bg-[#2c2c2e] rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                 </div>
-                <p style={{ margin: '0 0 8px', fontWeight: 600, fontSize: 18 }}>{texts.title}</p>
-                <p style={{ margin: '0 0 8px', fontSize: 14, opacity: 0.6 }}>{texts.info}</p>
-                <p style={{ margin: '0 0 24px', fontSize: 13, opacity: 0.5 }}>{texts.alt}</p>
-                <button onClick={onClose} style={{
-                    width: '100%', padding: '12px', borderRadius: 12,
-                    border: 'none', background: '#3a3a3c', color: '#fff', fontSize: 15, cursor: 'pointer',
-                }}>{texts.close}</button>
+                <p className="text-lg font-bold mb-2">{texts.title}</p>
+                <p className="text-xs text-white/70 mb-2 leading-relaxed">{texts.info}</p>
+                <p className="text-xs text-white/50 mb-6 leading-relaxed">{texts.alt}</p>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full py-3 rounded-xl bg-[#3a3a3c] hover:bg-[#4a4a4c] text-white text-sm font-semibold transition-colors"
+                >
+                    {texts.close}
+                </button>
             </div>
         </div>
     );
@@ -261,17 +200,18 @@ export default function InstallButton({ t }) {
     return (
         <>
             <button
+                type="button"
                 onClick={browserType === 'chrome' ? handleInstall : handleManualInstall}
-                className="flex items-center justify-center w-8 h-8 sm:w-auto sm:px-3 sm:py-2 rounded-lg bg-goral-600 hover:bg-goral-700 text-white transition-all"
+                className="flex items-center justify-center w-8 h-8 sm:w-auto sm:px-3 sm:py-2 rounded-lg bg-goral-600 hover:bg-goral-700 text-white transition-all shrink-0"
                 aria-label={t?.install_button || "Inštalovať"}
             >
                 <DownloadIcon />
                 <span className="hidden sm:inline ml-2 text-sm">{t?.install_button || "Inštalovať"}</span>
             </button>
 
-            {modalOpen && browserType === 'safari' && <SafariModal onClose={() => setModalOpen(false)} t={t} />}
-            {modalOpen && browserType === 'opera' && <OperaModal onClose={() => setModalOpen(false)} t={t} />}
-            {modalOpen && browserType === 'firefox' && <FirefoxModal onClose={() => setModalOpen(false)} t={t} />}
+            {modalOpen && browserType === 'safari' && createPortal(<SafariModal onClose={() => setModalOpen(false)} t={t} />, document.body)}
+            {modalOpen && browserType === 'opera' && createPortal(<OperaModal onClose={() => setModalOpen(false)} t={t} />, document.body)}
+            {modalOpen && browserType === 'firefox' && createPortal(<FirefoxModal onClose={() => setModalOpen(false)} t={t} />, document.body)}
         </>
     );
-}
+}

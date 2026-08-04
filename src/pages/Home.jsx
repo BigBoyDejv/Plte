@@ -98,7 +98,7 @@ export default function Home() {
 
       <HeroSection t={t} />
       <AnimatedRiverWave />
-      <div id="trip-tracker-section">
+      <div id="trip-tracker-section" className="mt-2 sm:mt-4">
         <TripTracker
           t={t}
           onMarkerClick={scrollToStop}
